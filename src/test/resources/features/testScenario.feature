@@ -12,7 +12,7 @@ Feature: Customer and Locations Menu Usage
     And I save the form
     Then the "partner" should appear in the grid list
 
-    When I navigate to the "Telephelyek" page
+    When I navigate to the "Location" page
     Then the "Telephelyek" grid should appear
 
     When I register 1 "site data" based on the API message
@@ -20,5 +20,5 @@ Feature: Customer and Locations Menu Usage
     Then the "site" should appear in the grid list
 
     Given I request 2 "data of devices" through the API: "https://random-data-api.com/api/device/random_device"
-    When I navigate to the "Eszközök" page
+    When I navigate to the "Tool" page
     Then the "Eszközök" grid should appear
