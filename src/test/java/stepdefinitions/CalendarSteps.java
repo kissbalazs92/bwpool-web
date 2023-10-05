@@ -18,6 +18,5 @@ public class CalendarSteps {
     public void theApplicationShouldOpen() {
         String currentURL = DriverManager.getInstance().getDriver().getCurrentUrl();
         assertEquals(currentURL, Configurations.getURL());
-
     }
 }
