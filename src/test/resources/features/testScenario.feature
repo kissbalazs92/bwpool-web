@@ -4,7 +4,7 @@ Feature: Customer and Locations Menu Usage
     Given I open the application in a browser
     Then the application should open
 
-    When I navigate to the "Partnerek" page
+    When I navigate to the "Costumers" page
     Then the "Ügyfelek" grid should appear
 
     Given I request 1 "user data" through the API: "https://random-data-api.com/api/users/random_user"
