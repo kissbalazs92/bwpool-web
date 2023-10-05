@@ -1,7 +1,7 @@
 Feature: Customer and Locations Menu Usage
 
   Scenario: Recording a Customer and Location in the application
-    Given I open the application in a browser at "https://bwpool.azurewebsites.net/"
+    Given I open the application in a browser
     Then the application should open
 
     When I navigate to the "Partnerek" page
