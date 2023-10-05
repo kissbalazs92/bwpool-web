@@ -11,7 +11,7 @@ import utils.DriverManager;
 @Test
 @CucumberOptions(
         features = "src/test/resources/features",
-        glue = "step-definitions",
+        glue = "stepdefinitions",
         plugin = {"pretty", "html:target/cucumber-reports"}
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
