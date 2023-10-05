@@ -7,7 +7,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class DriverManager {
 
-    private static DriverManager instance = null;
+    private static volatile DriverManager instance = null;
     private WebDriver driver;
 
     private DriverManager() {
