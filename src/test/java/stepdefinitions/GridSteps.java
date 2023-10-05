@@ -2,9 +2,13 @@ package stepdefinitions;
 
 import components.Grid;
 import io.cucumber.java.en.Then;
-import pages.Customer;
+import io.cucumber.java.en.When;
+import models.CustomerModel;
+import models.ToolModel;
 import pages.PageWithGrid;
 import utils.ScenarioContext;
+
+import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 
@@ -26,4 +30,25 @@ public class GridSteps extends StepDefinitionBase {
         }
     }
 
+    @When("I register {int} {string} based on the API message")
+    public void iRegisterBasedOnTheAPIMessage(int count, String modelName) {
+        switch(modelName.toLowerCase()) {
+            case "customer":
+                List<CustomerModel> costumers = context.getLatestCostumers();
+                for (int i = 0; i < count; i++) {
+                    CustomerModel customer = costumers.get(i);
+                    registerCustomer(customer);
+                }
+                break;
+            case "tool":
+                List<ToolModel> tools = context.getLatestTools();
+                for (int i = 0; i < count; i++) {
+                    ToolModel tool = tools.get(i);
+                    registerTool(tool);
+                }
+                break;
+            default:
+                throw new RuntimeException("Unsupported entity type: " + modelName);
+        }
+    }
 }

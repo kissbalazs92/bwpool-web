@@ -10,11 +10,14 @@ public class Grid {
 
     private final WebDriver driver;
 
+    private final GridDialog gridDialog;
+
     @FindBy(xpath = "//h4")
     private WebElement title;
 
     public Grid(WebDriver driver) {
         this.driver = driver;
+        this.gridDialog = new GridDialog(driver);
         PageFactory.initElements(driver, this);
     }
 

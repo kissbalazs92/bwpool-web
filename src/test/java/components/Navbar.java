@@ -16,7 +16,7 @@ public class Navbar {
         WebElement navButton = driver.findElement(By.linkText(pageName));
         Utilities.click(navButton);
         try {
-            String fullClassName = "your.package.path." + pageName;
+            String fullClassName = "pages." + pageName;
             Class<?> clazz = Class.forName(fullClassName);
             return clazz.getConstructor(WebDriver.class).newInstance(driver);
         } catch (Exception e) {

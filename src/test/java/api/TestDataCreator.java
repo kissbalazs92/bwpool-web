@@ -16,5 +16,4 @@ public class TestDataCreator {
         T[] array = new Gson().fromJson(response.asString(), clazz);
         return Arrays.asList(array);
     }
-
 }

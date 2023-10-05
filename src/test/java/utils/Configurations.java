@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class Configurations {
 
-    private static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
     static {
         try {
