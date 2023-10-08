@@ -3,6 +3,8 @@ package components;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import utils.Configurations;
 import utils.Utilities;
 
 public class Navbar {
@@ -13,7 +15,9 @@ public class Navbar {
     }
 
     public Object navigateTo(String pageName) {
-        WebElement navButton = driver.findElement(By.linkText(pageName));
+        By locator = By.xpath("//a[@href='" + pageName + "']");
+        Configurations.getWait().until(ExpectedConditions.visibilityOfElementLocated(locator));
+        WebElement navButton = driver.findElement(By.xpath("//a[@href='" + pageName + "']"));
         Utilities.click(navButton);
         try {
             String fullClassName = "pages." + pageName;

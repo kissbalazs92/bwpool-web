@@ -2,8 +2,10 @@ package stepdefinitions;
 
 import components.Navbar;
 import io.cucumber.java.en.When;
+import pages.PageWithGrid;
 import utils.DriverManager;
 import utils.ScenarioContext;
+import utils.Utilities;
 
 public class NavbarSteps extends StepDefinitionBase {
 

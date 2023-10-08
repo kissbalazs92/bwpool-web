@@ -1,28 +1,25 @@
 package models;
 
-public class CustomerModel {
+public class CustomerModel extends ParentModel {
 
-    private final String id;
-    private final String first_name;
-    private final String last_name;
-    private final String email;
-    private final String phone;
-    private final String city;
-    private final String zip_code;
-    private final String street_name;
-    private final String houseNumber;
+    private String id;
+    private String first_name;
+    private String last_name;
+    private String email;
+    private String phone;
+    private final String houseNumber = "";
+    private LocationModel location;
+    private Address address;
 
-    public CustomerModel(String id, String first_name, String last_name, String email, String city, String zip_code, String street_name) {
-        this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
-        this.email = email;
-        this.city = city;
-        this.zip_code = zip_code;
-        this.street_name = street_name;
-        this.phone = "";
-        this.houseNumber = "";
+    public static class Address {
+        private String city;
+        private String street_name;
+        private String street_address;
+        private String zip_code;
+        private String state;
+        private String country;
     }
+
 
     public String getId() {
         return id;
@@ -45,15 +42,16 @@ public class CustomerModel {
     }
 
     public String getCity() {
-        return city;
+        return address.city;
     }
 
     public String getZip_code() {
-        return zip_code;
+        address.zip_code = address.zip_code.replace("-", "");
+        return address.zip_code;
     }
 
     public String getStreet_name() {
-        return street_name;
+        return address.street_name;
     }
 
     public String getHouseNumber() {
@@ -62,5 +60,17 @@ public class CustomerModel {
 
     public String getName() {
         return first_name + " " + last_name;
+    }
+
+    public LocationModel getLocation() {
+        return location;
+    }
+
+    public void setLocation() {
+        this.location = new LocationModel(this);
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

@@ -1,15 +1,25 @@
 package models;
 
-public class LocationModel {
+public record LocationModel(CustomerModel costumer) {
 
-    private final CustomerModel costumer;
-
-    public LocationModel(CustomerModel costumer) {
-        this.costumer = costumer;
+    public String getCustomerName() {
+        return costumer.getName();
     }
 
-    public CustomerModel getCostumer() {
-        return costumer;
+    public String getCity() {
+        return costumer.getCity();
+    }
+
+    public String getZip_code() {
+        return costumer.getZip_code();
+    }
+
+    public String getStreet_name() {
+        return costumer.getStreet_name();
+    }
+
+    public String getHouseNumber() {
+        return costumer.getHouseNumber();
     }
 
     public String getFullAddress() {

@@ -1,25 +1,21 @@
 package models;
 
-public class ToolModel {
+public class ToolModel extends ParentModel {
 
     private final String manufacturer;
     private final String model;
     private final String serial_number;
     private final String platform;
-    private final String name;
     private final Boolean isInService;
-    private final CustomerModel costumer;
-    private final LocationModel locationModel;
+    private final CustomerModel customer;
 
-    public ToolModel(String manufacturer, String model, String serial_number, String platform, CustomerModel costumer, LocationModel locationModel) {
+    public ToolModel(String manufacturer, String model, String serial_number, String platform, CustomerModel customer) {
         this.manufacturer = manufacturer;
         this.model = model;
         this.serial_number = serial_number;
         this.platform = platform;
-        this.name = manufacturer + " " + model;
         this.isInService = false;
-        this.costumer = costumer;
-        this.locationModel = locationModel;
+        this.customer = customer;
     }
 
     public String getManufacturer() {
@@ -39,18 +35,26 @@ public class ToolModel {
     }
 
     public String getName() {
-        return name;
+        return manufacturer + " " + model;
     }
 
     public Boolean getInService() {
         return isInService;
     }
 
-    public CustomerModel getCostumer() {
-        return costumer;
+    public CustomerModel getCustomer() {
+        return customer;
     }
 
-    public LocationModel getLocation() {
-        return locationModel;
+    public String getCustomerName() {
+        return customer.getName();
+    }
+
+    public String getFullAddress() {
+        return customer.getLocation().getFullAddress();
+    }
+
+    public boolean isInService() {
+        return isInService;
     }
 }
