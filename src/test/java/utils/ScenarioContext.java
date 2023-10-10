@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ScenarioContext {
     private Object currentPage;
-    private List<CustomerModel> latestCostumers;
+    private List<CustomerModel> latestCustomers;
     private List<ToolModel> latestTools;
 
     public void setCurrentPage(Object page) {
@@ -18,16 +18,16 @@ public class ScenarioContext {
         return currentPage;
     }
 
-    public List<CustomerModel> getLatestCostumers() {
-        return latestCostumers;
+    public List<CustomerModel> getLatestCustomers() {
+        return latestCustomers;
     }
 
     public List<ToolModel> getLatestTools() {
         return latestTools;
     }
 
-    public void setLatestCostumers(List<CustomerModel> latestCostumers) {
-        this.latestCostumers = latestCostumers;
+    public void setLatestCustomers(List<CustomerModel> latestCustomers) {
+        this.latestCustomers = latestCustomers;
     }
 
     public void setLatestTools(List<ToolModel> latestToolModels) {

@@ -1,11 +1,10 @@
 package stepdefinitions;
 
 import components.Navbar;
+import enums.PageType;
 import io.cucumber.java.en.When;
-import pages.PageWithGrid;
 import utils.DriverManager;
 import utils.ScenarioContext;
-import utils.Utilities;
 
 public class NavbarSteps extends StepDefinitionBase {
 
@@ -13,10 +12,10 @@ public class NavbarSteps extends StepDefinitionBase {
         super(context);
     }
 
-    @When("I navigate to the {string} page")
-    public void iNavigateToThePage(String pageName) {
+    @When("I navigate to the {pageType} page")
+    public void iNavigateToThePage(PageType pageName) {
         Navbar navbar = new Navbar(DriverManager.getInstance().getDriver());
-        Object currentPage = navbar.navigateTo(pageName);
+        Object currentPage = navbar.navigateTo(pageName.name());
         context.setCurrentPage(currentPage);
     }
 }

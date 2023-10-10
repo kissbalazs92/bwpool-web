@@ -1,6 +1,7 @@
 package stepdefinitions;
 
 import components.Grid;
+import enums.GridType;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.And;
@@ -23,26 +24,27 @@ public class GridSteps extends StepDefinitionBase {
         super(context);
     }
 
-    @Then("the {string} grid should appear")
-    public void theGridShouldAppear(String expectedGridName) {
+    @Then("the {gridType} grid should appear")
+    public void theGridShouldAppear(GridType expectedGridType) {
         Object currentPage = context.getCurrentPage();
         if (currentPage instanceof PageWithGrid) {
             Grid grid = ((PageWithGrid) currentPage).getGrid();
-            Utilities.waitForElementTextToBe(grid.getTitleElement(), expectedGridName);
+            Utilities.waitForElementTextToBe(grid.getTitleElement(), expectedGridType.getTitle());
             String actualGridName = grid.getTitle();
-            assertEquals(actualGridName, expectedGridName);
+            assertEquals(actualGridName, expectedGridType.getTitle());
         } else {
             throw new RuntimeException("The current page does not have a grid");
         }
     }
 
-    @When("I register {int} {string} based on the API message")
-    public void iRegisterBasedOnTheAPIMessage(int count, String modelName) {
+
+    @When("I register {int} {string} data based on the API message")
+    public void iRegisterDataBasedOnTheAPIMessage(int count, String modelName) {
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
         grid.register(count, modelName, null, context);
     }
-    @When("I register {int} {string} based on the API message with the following details")
-    public void iRegisterBasedOnTheAPIMessageWithTheFollowingDetails(int count, String modelName, DataTable valuesDifferFromApi) {
+    @When("I register {int} {string} data based on the API message with the following details")
+    public void iRegisterDataBasedOnTheAPIMessageWithTheFollowingDetails(int count, String modelName, DataTable valuesDifferFromApi) {
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
         grid.register(count, modelName, valuesDifferFromApi, context);
     }
@@ -62,7 +64,7 @@ public class GridSteps extends StepDefinitionBase {
     public void theShouldAppearInTheGridList(String modelName) {
         List<List<String>> expectedValuesInGrid = new ArrayList<>();
         if (modelName.toLowerCase().contains("customer")) {
-            List<CustomerModel> lastAddedCustomers = context.getLatestCostumers();
+            List<CustomerModel> lastAddedCustomers = context.getLatestCustomers();
             for (CustomerModel customer : lastAddedCustomers) {
                 List<String> values = new ArrayList<>();
                 values.add(customer.getName());
@@ -83,7 +85,7 @@ public class GridSteps extends StepDefinitionBase {
                 expectedValuesInGrid.add(values);
             }
         } else if (modelName.toLowerCase().contains("location")) {
-            List<CustomerModel> lastAddedCustomers = context.getLatestCostumers();
+            List<CustomerModel> lastAddedCustomers = context.getLatestCustomers();
             for (CustomerModel customer : lastAddedCustomers) {
                 List<String> values = new ArrayList<>();
                 values.add(customer.getName());
@@ -104,5 +106,21 @@ public class GridSteps extends StepDefinitionBase {
     @DataTableType(replaceWithEmptyString = "[blank]")
     public String stringType(String cell) {
         return cell;
+    }
+
+    @When("I click on the {string} button")
+    public void iClickOnTheButton(String buttonName) {
+        Utilities.clickOnText(buttonName);
+    }
+
+    @When("I filter in the Search field with {string}")
+    public void iFilterInTheSearchFieldWith(String text) {
+        PageWithGrid currentPage = (PageWithGrid) context.getCurrentPage();
+        if (text.toLowerCase().contains("customer")) {
+
+        }
+        Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
+        grid.typeInSearchBox(text);
+        grid.clickSearchButton();
     }
 }

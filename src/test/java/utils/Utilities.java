@@ -65,4 +65,9 @@ public class Utilities {
         wait.until(ExpectedConditions.textToBePresentInElement(element, text));
     }
 
+    public static void clickOnText(String text) {
+        Wait<WebDriver> wait = Configurations.getWait();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.xpath("//*[contains(text(),'" + text + "')]"), text));
+    }
+
 }

@@ -27,6 +27,15 @@ public class Grid {
     @FindBy(xpath = "//button[@aria-label='Add']")
     private WebElement addButton;
 
+    @FindBy(xpath = "//button[@aria-label='Excel Export']")
+    private WebElement excelExport;
+
+    @FindBy(id = "Grid_ToolbarSearchBox")
+    private WebElement searchBox;
+
+    @FindBy(xpath = "//span[@title='Search']")
+    private WebElement searchButton;
+
     @FindBy(xpath = "//h4")
     private WebElement title;
 
@@ -70,7 +79,7 @@ public class Grid {
         }
 
         if (modelName.toLowerCase().contains("customer")) {
-            List<CustomerModel> costumers = context.getLatestCostumers();
+            List<CustomerModel> costumers = context.getLatestCustomers();
             for (int i = 0; i < count; i++) {
                 CustomerModel customer = costumers.get(i);
                 Utilities.setProperties(customer, diffValues);
@@ -94,7 +103,7 @@ public class Grid {
                 }
             }
         } else if (modelName.toLowerCase().contains("location")) {
-            List<CustomerModel> costumers = context.getLatestCostumers();
+            List<CustomerModel> costumers = context.getLatestCustomers();
             for (int i = 0; i < count; i++) {
                 CustomerModel customer = costumers.get(i);
                 customer.setLocation();
@@ -123,5 +132,13 @@ public class Grid {
             gridContent.add(rowContent);
         }
         return gridContent;
+    }
+
+    public void typeInSearchBox(String text) {
+        Utilities.type(searchBox, text);
+    }
+
+    public void clickSearchButton() {
+        Utilities.click(searchButton);
     }
 }
