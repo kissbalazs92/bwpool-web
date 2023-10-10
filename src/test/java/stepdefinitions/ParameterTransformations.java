@@ -15,7 +15,7 @@ public class ParameterTransformations {
     @ParameterType(".*")
     public static GridType gridType(String gridTypeName) {
         for (GridType gridType : GridType.values()) {
-            if (gridType.getTitle().equalsIgnoreCase(gridTypeName)) {
+            if (gridType.getTitle().equalsIgnoreCase(gridTypeName.replaceAll("\"", ""))) {
                 return gridType;
             }
         }
@@ -25,7 +25,7 @@ public class ParameterTransformations {
     @ParameterType(".*")
     public static DataType dataType(String dataTypeName) {
         try {
-            return DataType.valueOf(dataTypeName.toUpperCase());
+            return DataType.valueOf(dataTypeName.replaceAll("\"", "").toUpperCase());
         }
         catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Unknown data type: " + dataTypeName);

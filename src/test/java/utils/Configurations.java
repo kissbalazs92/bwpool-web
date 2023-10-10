@@ -38,4 +38,8 @@ public class Configurations {
                 .pollingEvery(Duration.ofMillis(500))
                 .ignoring(Exception.class);
     }
+
+    public static String getMainPageName() {
+        return properties.getProperty("mainPage");
+    }
 }

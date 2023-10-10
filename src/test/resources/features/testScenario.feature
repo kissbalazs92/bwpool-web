@@ -1,9 +1,11 @@
 Feature: Customer, Locations, and Tools Menu Usage
 
-  Scenario: Recording a Customer and Location in the application
+  Background:
     Given I open the application in a browser
     Then the application should open
 
+  Scenario: Recording a Customer and Location in the application
+    Given I am on the "Calendar" page
     When I navigate to the "Customer" page
     Then the "Ügyfelek" grid should appear
 

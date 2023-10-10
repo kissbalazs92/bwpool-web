@@ -96,7 +96,7 @@ public class Grid {
                 ToolModel tool = tools.get(i);
                 Utilities.setProperties(tool, diffValues);
                 grid.clickAddButton();
-                grid.getGridDialog().registerTool(tool);
+                grid.getGridDialog().registerTool(tool, context);
                 if (count > 1) {
                     GridSteps gridSteps = new GridSteps(context);
                     gridSteps.iSaveTheForm();
@@ -108,7 +108,7 @@ public class Grid {
                 CustomerModel customer = costumers.get(i);
                 customer.setLocation();
                 grid.clickAddButton();
-                grid.getGridDialog().registerLocation(customer.getLocation());
+                grid.getGridDialog().registerLocation(customer.getLocation(), context);
                 if (count > 1) {
                     GridSteps gridSteps = new GridSteps(context);
                     gridSteps.iSaveTheForm();

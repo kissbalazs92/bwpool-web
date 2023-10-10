@@ -2,21 +2,12 @@ package models;
 
 public class ToolModel extends ParentModel {
 
-    private final String manufacturer;
-    private final String model;
-    private final String serial_number;
-    private final String platform;
-    private final Boolean isInService;
-    private final CustomerModel customer;
-
-    public ToolModel(String manufacturer, String model, String serial_number, String platform, CustomerModel customer) {
-        this.manufacturer = manufacturer;
-        this.model = model;
-        this.serial_number = serial_number;
-        this.platform = platform;
-        this.isInService = false;
-        this.customer = customer;
-    }
+    private String manufacturer;
+    private String model;
+    private String serial_number;
+    private String platform;
+    private Boolean isInService;
+    private CustomerModel customer;
 
     public String getManufacturer() {
         return manufacturer;

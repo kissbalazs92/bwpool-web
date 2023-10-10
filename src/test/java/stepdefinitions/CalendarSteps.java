@@ -2,6 +2,7 @@ package stepdefinitions;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import org.openqa.selenium.WebDriver;
 import utils.Configurations;
 import utils.DriverManager;
 import utils.ScenarioContext;
@@ -22,7 +23,16 @@ public class CalendarSteps extends StepDefinitionBase {
 
     @Then("the application should open")
     public void theApplicationShouldOpen() {
-        String currentURL = DriverManager.getInstance().getDriver().getCurrentUrl();
+        WebDriver driver = DriverManager.getInstance().getDriver();
+        String currentURL = driver.getCurrentUrl();
+        String mainPageName = Configurations.getMainPageName();
+        try {
+            Class<?> clazz = Class.forName("pages." + mainPageName);
+            context.setCurrentPage(clazz.getConstructor(WebDriver.class).newInstance(driver));
+        }
+        catch (Exception e) {
+            throw new RuntimeException("Failed to open application, expected main page " + mainPageName, e);
+        }
         assertEquals(currentURL, Configurations.getURL());
     }
 }

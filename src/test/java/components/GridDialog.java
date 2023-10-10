@@ -7,7 +7,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import utils.ScenarioContext;
 import utils.Utilities;
+
+import java.util.List;
 
 public class GridDialog {
     private final WebDriver driver;
@@ -79,20 +82,22 @@ public class GridDialog {
         fillDialogInput(customer.getId(), commentCustomerDialog);
     }
 
-    public void registerTool(ToolModel tool) {
+    public void registerTool(ToolModel tool, ScenarioContext context) {
+        LocationModel latestLocations = context.getLatestLocations().get(0);
         fillDialogInput(tool.getName(), name);
-        fillDialogInput(tool.getCustomerName(), customer);
-        fillDialogInput(tool.getCustomer().getLocation().getFullAddress(), location);
+        fillDialogInput(latestLocations.getCustomerName(), customer);
+        fillDialogInput(latestLocations.getFullAddress(), location);
         fillDialogInput(tool.getPlatform(), description);
         fillDialogInput(tool.getSerial_number(), commentToolDialog);
     }
 
-    public void registerLocation(LocationModel location) {
+    public void registerLocation(LocationModel location, ScenarioContext context) {
         fillDialogInput(location.getCustomerName(), customer);
         fillDialogInput(location.getCity(), city);
         fillDialogInput(location.getZip_code(), zip);
         fillDialogInput(location.getStreet_name(), street);
         fillDialogInput(location.getHouseNumber(), houseNumber);
+        context.setLatestLocations(List.of(location));
     }
 
     public void clickSaveButton() {
