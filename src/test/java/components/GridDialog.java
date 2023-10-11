@@ -62,6 +62,9 @@ public class GridDialog {
     @FindBy(id = "Comm")
     private WebElement commentToolDialog;
 
+    @FindBy(xpath = "//*[contains(@class, 'e-dropdownbase')]/parent::div")
+    private WebElement dropdownList;
+
     public GridDialog(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
@@ -75,6 +78,10 @@ public class GridDialog {
         Utilities.type(element, text);
     }
 
+    public void fillDialogDropdown(String text, WebElement element) {
+        Utilities.typeInDropdown(element, text, dropdownList);
+    }
+
     public void registerCustomer(CustomerModel customer) {
         fillDialogInput(customer.getName(), name);
         fillDialogInput(customer.getEmail(), email);
@@ -84,15 +91,16 @@ public class GridDialog {
 
     public void registerTool(ToolModel tool, ScenarioContext context) {
         LocationModel latestLocations = context.getLatestLocations().get(0);
+        tool.setCustomer(latestLocations.getCustomer());
         fillDialogInput(tool.getName(), name);
-        fillDialogInput(latestLocations.getCustomerName(), customer);
-        fillDialogInput(latestLocations.getFullAddress(), location);
+        fillDialogDropdown(tool.getCustomerName(), customer);
+        fillDialogDropdown(tool.getFullAddress(), location);
         fillDialogInput(tool.getPlatform(), description);
         fillDialogInput(tool.getSerial_number(), commentToolDialog);
     }
 
     public void registerLocation(LocationModel location, ScenarioContext context) {
-        fillDialogInput(location.getCustomerName(), customer);
+        fillDialogDropdown(location.getCustomerName(), customer);
         fillDialogInput(location.getCity(), city);
         fillDialogInput(location.getZip_code(), zip);
         fillDialogInput(location.getStreet_name(), street);
@@ -103,5 +111,9 @@ public class GridDialog {
     public void clickSaveButton() {
         Utilities.click(saveButton);
         Utilities.waitForElementToDisappear(dialogTitle);
+    }
+
+    public WebElement getDropdownList() {
+        return dropdownList;
     }
 }

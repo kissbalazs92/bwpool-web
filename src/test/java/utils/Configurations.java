@@ -11,8 +11,8 @@ import java.util.Properties;
 public class Configurations {
 
     private static final Properties properties = new Properties();
-    private static final String projectRootPath = System.getProperty("user.dir");
-    private static final String confPath = projectRootPath + "/src/test/resources/conf.properties";
+    private static final String projectRootPath = System.getProperty("user.dir/");
+    private static final String confPath = projectRootPath + "src/test/resources/conf.properties";
 
     static {
         try {
@@ -32,6 +32,10 @@ public class Configurations {
         return Integer.parseInt(properties.getProperty("waitTime"));
     }
 
+    public static int getDownloadWaitTime() {
+        return Integer.parseInt(properties.getProperty("downloadWaitTime"));
+    }
+
     public static FluentWait<WebDriver> getWait() {
         return new FluentWait<>(DriverManager.getInstance().getDriver())
                 .withTimeout(Duration.ofSeconds(getWaitTime()))
@@ -41,5 +45,9 @@ public class Configurations {
 
     public static String getMainPageName() {
         return properties.getProperty("mainPage");
+    }
+
+    public static String getDownloadFolder() {
+        return projectRootPath + properties.getProperty("download.folder");
     }
 }

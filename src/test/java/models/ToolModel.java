@@ -6,7 +6,7 @@ public class ToolModel extends ParentModel {
     private String model;
     private String serial_number;
     private String platform;
-    private Boolean isInService;
+    private Boolean isInService = false;
     private CustomerModel customer;
 
     public String getManufacturer() {
@@ -47,5 +47,13 @@ public class ToolModel extends ParentModel {
 
     public boolean isInService() {
         return isInService;
+    }
+
+    public void setCustomer(CustomerModel customer) {
+        this.customer = customer;
+    }
+
+    public void setInService(Boolean isInService) {
+        this.isInService = isInService;
     }
 }

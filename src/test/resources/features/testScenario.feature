@@ -27,7 +27,6 @@ Feature: Customer, Locations, and Tools Menu Usage
     Then the "Eszközök" grid should appear
 
     When I register 2 "Tool" data based on the API message
-    And I save the form
     Then the "Tools" should appear in the grid list
 
     When I click on the "Excel Export" button

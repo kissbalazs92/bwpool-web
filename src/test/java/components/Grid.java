@@ -69,6 +69,7 @@ public class Grid {
         Object currentPage = context.getCurrentPage();
         Grid grid;
         Map<String, String> diffValues = new HashMap<>();
+
         if (valuesDifferFromApi != null) {
             diffValues = valuesDifferFromApi.asMap(String.class, String.class);
         }
@@ -120,14 +121,18 @@ public class Grid {
     }
 
     public List<List<String>> getGridContent() {
-        String xpathOfRowCells = "//*[not(self::tr) and not(contains(@class, 'e-hide')) and (text() and not(normalize-space(.)='') or contains(@class, 'e-icons'))]";
+        String xpathOfRowCells = "//*[not(self::tr) and not(contains(@class, 'e-hide')) and not(contains(@aria-label, 'Azonosító')) and (text() and not(normalize-space(.)='') or contains(@class, 'e-icons') or (parent::div[contains(@class, 'e-checkbox-wrapper')] and contains(@class, 'e-frame')))]";
         List<List<String>> gridContent = new ArrayList<>();
         for (WebElement row : rows) {
             List<WebElement> rowRecords = row.findElements(By.xpath("." + xpathOfRowCells));
             List<String> rowContent = new ArrayList<>();
             for (WebElement rowRecord : rowRecords) {
-                String recordText = rowRecord.getText().trim();
-                rowContent.add(recordText);
+                if (rowRecord.getAttribute("class").contains("e-frame")) {
+                    rowContent.add(rowRecord.getAttribute("class").contains("e-check") ? "true" : "false");
+                } else {
+                    String recordText = rowRecord.getText().trim();
+                    rowContent.add(recordText);
+                }
             }
             gridContent.add(rowContent);
         }

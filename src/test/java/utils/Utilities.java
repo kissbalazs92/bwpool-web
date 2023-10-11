@@ -1,8 +1,10 @@
 package utils;
 
+import components.GridDialog;
 import models.CustomerModel;
 import models.ParentModel;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -12,6 +14,7 @@ import org.openqa.selenium.support.ui.Wait;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 public class Utilities {
@@ -40,8 +43,32 @@ public class Utilities {
         element.sendKeys(text);
     }
 
+    public static void typeInDropdown(WebElement element, String text, WebElement dropdown) {
+        waitForElement(element);
+        element.sendKeys(text);
+        waitForElement(dropdown);
+        removeElement(dropdown);
+    }
+
+    public static void removeElement(WebElement element) {
+        ((JavascriptExecutor) driver).executeScript(
+                "var element = arguments[0];" +
+                    "element.parentNode.removeChild(element);", element
+        );
+    }
+
+    public static Boolean isExpectedListContainedInActualList(List<List<String>> actualList, List<List<String>> expectedList) {
+        boolean allElementsFound = true;
+        for (List<String> expectedElement : expectedList) {
+            if (!actualList.contains(expectedElement)) {
+                allElementsFound = false;
+                break;
+            }
+        }
+        return allElementsFound;
+    }
+
     public static void setProperties(ParentModel model, Map<String, String> properties) {
-        System.out.println("properties: " + properties);
         for (Map.Entry<String, String> entry : properties.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();

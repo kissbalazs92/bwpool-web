@@ -23,10 +23,14 @@ public record LocationModel(CustomerModel costumer) {
     }
 
     public String getFullAddress() {
-        return costumer.getZip_code()
+        return (costumer.getZip_code()
                 + " " + costumer.getCity()
                 + ", " + costumer.getStreet_name()
-                + " " + costumer.getHouseNumber();
+                + " " + costumer.getHouseNumber()).trim();
+    }
+
+    public CustomerModel getCustomer() {
+        return costumer;
     }
 
 }

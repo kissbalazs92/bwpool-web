@@ -82,6 +82,7 @@ public class GridSteps extends StepDefinitionBase {
                 values.add(tool.getCustomer().getLocation().getFullAddress());
                 values.add(tool.getPlatform());
                 values.add(tool.getSerial_number());
+                values.add(tool.getInService() ? "true" : "false");
                 expectedValuesInGrid.add(values);
             }
         } else if (modelName.toLowerCase().contains("location")) {
@@ -100,7 +101,7 @@ public class GridSteps extends StepDefinitionBase {
         System.out.println("Current page: " + context.getCurrentPage());
         System.out.println("Actual values in grid: " + actualValuesInGrid);
         System.out.println("Expected values in grid: " + expectedValuesInGrid);
-        assertTrue(actualValuesInGrid.containsAll(expectedValuesInGrid));
+        assertTrue(Utilities.isExpectedListContainedInActualList(actualValuesInGrid, expectedValuesInGrid));
     }
 
     @DataTableType(replaceWithEmptyString = "[blank]")

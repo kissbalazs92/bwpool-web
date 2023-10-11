@@ -7,7 +7,7 @@ public class CustomerModel extends ParentModel {
     private String last_name;
     private String email;
     private String phone;
-    private final String houseNumber = "";
+    private final String houseNumber = ""; //nincs ilyen json válasz, ezért előre be kell állítani üresre
     private LocationModel location;
     private Address address;
 
