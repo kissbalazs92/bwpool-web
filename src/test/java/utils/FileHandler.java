@@ -12,6 +12,7 @@ public class FileHandler {
 
     public static boolean isFileDownloaded(WebDriver driver, String fileName) {
         String downloadPath = Configurations.getDownloadFolder();
+        System.out.println("downloadPath:" + downloadPath);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(Configurations.getDownloadWaitTime()));
         ExpectedCondition<Boolean> fileExists = new ExpectedCondition<Boolean>() {
             @Override

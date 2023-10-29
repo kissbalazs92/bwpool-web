@@ -2,7 +2,8 @@ package enums;
 
 public enum DataType {
     CUSTOMER("Customer"),
-    TOOL("Tool");
+    TOOL("Tool"),
+    LOCATION("Location");
 
     private final String value;
 

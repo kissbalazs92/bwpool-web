@@ -11,8 +11,8 @@ import java.util.Properties;
 public class Configurations {
 
     private static final Properties properties = new Properties();
-    private static final String projectRootPath = System.getProperty("user.dir/");
-    private static final String confPath = projectRootPath + "src/test/resources/conf.properties";
+    private static final String projectRootPath = System.getProperty("user.dir");
+    private static final String confPath = projectRootPath + "/src/test/resources/conf.properties";
 
     static {
         try {
@@ -49,5 +49,25 @@ public class Configurations {
 
     public static String getDownloadFolder() {
         return projectRootPath + properties.getProperty("download.folder");
+    }
+
+    public static String[] getBrowsers() {
+        return extractArray(properties.getProperty("browsers"));
+    }
+
+    public static String[] getResolutions() {
+        return extractArray(properties.getProperty("resolutions"));
+    }
+
+    public static boolean isParallelExecution() {
+        return Boolean.parseBoolean(properties.getProperty("parallel"));
+    }
+
+    public static String getParallelThreads() {
+        return properties.getProperty("parallel.threads");
+    }
+
+    private static String[] extractArray(String property) {
+        return property.replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("\"", "").split(",");
     }
 }

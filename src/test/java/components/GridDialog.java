@@ -92,6 +92,7 @@ public class GridDialog {
     public void registerTool(ToolModel tool, ScenarioContext context) {
         LocationModel latestLocations = context.getLatestLocations().get(0);
         tool.setCustomer(latestLocations.getCustomer());
+        tool.getCustomer().addTool(tool);
         fillDialogInput(tool.getName(), name);
         fillDialogDropdown(tool.getCustomerName(), customer);
         fillDialogDropdown(tool.getFullAddress(), location);

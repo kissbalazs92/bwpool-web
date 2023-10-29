@@ -19,8 +19,6 @@ public enum PageType {
     }
 
     public static PageType fromName(String name) {
-        PageType[] asd = values();
-        //System.out.println((Arrays.stream(asd).toArray()[0].getClass().getName()));
         for (PageType pageType : values()) {
             if (pageType.getName().equalsIgnoreCase(name.replaceAll("\"", ""))) {
                 return pageType;

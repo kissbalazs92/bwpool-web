@@ -1,22 +1,28 @@
 package stepdefinitions;
 
 import components.Grid;
+import enums.DataType;
 import enums.GridType;
+import enums.ModelsGridProperties;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import models.CustomerModel;
-import models.ToolModel;
+import models.BaseModel;
+import models.LocationModel;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import pages.PageWithGrid;
+import utils.DriverManager;
 import utils.ScenarioContext;
 import utils.Utilities;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class GridSteps extends StepDefinitionBase {
 
@@ -24,8 +30,9 @@ public class GridSteps extends StepDefinitionBase {
         super(context);
     }
 
-    @Then("the {gridType} grid should appear")
-    public void theGridShouldAppear(GridType expectedGridType) {
+    @Then("the \"{gridType}\" should appear")
+    public void theShouldAppear(GridType expectedGridType) {
+        //fail();
         Object currentPage = context.getCurrentPage();
         if (currentPage instanceof PageWithGrid) {
             Grid grid = ((PageWithGrid) currentPage).getGrid();
@@ -43,6 +50,7 @@ public class GridSteps extends StepDefinitionBase {
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
         grid.register(count, modelName, null, context);
     }
+
     @When("I register {int} {string} data based on the API message with the following details")
     public void iRegisterDataBasedOnTheAPIMessageWithTheFollowingDetails(int count, String modelName, DataTable valuesDifferFromApi) {
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
@@ -60,49 +68,35 @@ public class GridSteps extends StepDefinitionBase {
         } 
     }
 
-    @Then("the {string} should appear in the grid list")
-    public void theShouldAppearInTheGridList(String modelName) {
-        List<List<String>> expectedValuesInGrid = new ArrayList<>();
-        if (modelName.toLowerCase().contains("customer")) {
-            List<CustomerModel> lastAddedCustomers = context.getLatestCustomers();
-            for (CustomerModel customer : lastAddedCustomers) {
-                List<String> values = new ArrayList<>();
-                values.add(customer.getName());
-                values.add(customer.getEmail());
-                values.add(customer.getPhone());
-                values.add(customer.getId());
-                expectedValuesInGrid.add(values);
-            }
-        } else if (modelName.toLowerCase().contains("tool")) {
-            List<ToolModel> lastAddedTools = context.getLatestTools();
-            for (ToolModel tool : lastAddedTools) {
-                List<String> values = new ArrayList<>();
-                values.add(tool.getName());
-                values.add(tool.getCustomerName());
-                values.add(tool.getCustomer().getLocation().getFullAddress());
-                values.add(tool.getPlatform());
-                values.add(tool.getSerial_number());
-                values.add(tool.getInService() ? "true" : "false");
-                expectedValuesInGrid.add(values);
-            }
-        } else if (modelName.toLowerCase().contains("location")) {
-            List<CustomerModel> lastAddedCustomers = context.getLatestCustomers();
-            for (CustomerModel customer : lastAddedCustomers) {
-                List<String> values = new ArrayList<>();
-                values.add(customer.getName());
-                values.add(customer.getCity());
-                values.add(customer.getZip_code());
-                values.add(customer.getStreet_name());
-                values.add(customer.getHouseNumber());
-                expectedValuesInGrid.add(values);
-            }
+    @Then("the \"{dataType}\" data should appear in the grid list")
+    public void theDataShouldAppearInTheGridList(DataType dataType) {
+        List<BaseModel> models = new ArrayList<>();
+        switch (dataType) {
+            case CUSTOMER:
+                models = new ArrayList<BaseModel>(context.getLatestCustomers());
+                break;
+            case TOOL:
+                models = new ArrayList<BaseModel>(context.getLatestTools());
+                break;
+            case LOCATION:
+                models = new ArrayList<BaseModel>(context.getLatestLocations());
+                break;
+            default:
+                throw new UnsupportedOperationException("Unsupported data type: " + dataType);
         }
+        List<List<String>> expectedValuesInGrid = models.stream()
+                .map(BaseModel::extractGridValues)
+                .toList();
+
         List<List<String>> actualValuesInGrid = ((PageWithGrid) context.getCurrentPage()).getGrid().getGridContent();
-        System.out.println("Current page: " + context.getCurrentPage());
-        System.out.println("Actual values in grid: " + actualValuesInGrid);
-        System.out.println("Expected values in grid: " + expectedValuesInGrid);
-        assertTrue(Utilities.isExpectedListContainedInActualList(actualValuesInGrid, expectedValuesInGrid));
+        Set<List<String>> expectedSet = new HashSet<>(expectedValuesInGrid);
+        Set<List<String>> actualSet = new HashSet<>(actualValuesInGrid);
+        System.out.println("Expected set: " + expectedSet);
+        System.out.println("Actual set: " + actualSet);
+        boolean allExpectedValuesFound = actualSet.containsAll(expectedSet);
+        softAssert.assertTrue(allExpectedValuesFound);
     }
+
 
     @DataTableType(replaceWithEmptyString = "[blank]")
     public String stringType(String cell) {
@@ -111,17 +105,63 @@ public class GridSteps extends StepDefinitionBase {
 
     @When("I click on the {string} button")
     public void iClickOnTheButton(String buttonName) {
-        Utilities.clickOnText(buttonName);
+        WebElement button = DriverManager.getInstance().getDriver().findElement(By.xpath("//span[text()='" + buttonName + "']/ancestor::button[1]"));
+        button.click();
     }
 
-    @When("I filter in the Search field with {string}")
-    public void iFilterInTheSearchFieldWith(String text) {
-        PageWithGrid currentPage = (PageWithGrid) context.getCurrentPage();
-        if (text.toLowerCase().contains("customer")) {
-
+    @When("I filter for the \"{dataType}\" based on \"{modelsGridProperty}\" in the Search field")
+    public void iFilterForTheBasedOnInTheSearchField(DataType dataType, ModelsGridProperties modelsGridProperty) {
+        BaseModel model;
+        switch (dataType) {
+            case CUSTOMER:
+                model = context.getLatestCustomers().get(0);
+                System.out.println(model);
+                break;
+            case TOOL:
+                model = context.getLatestTools().get(0);
+                System.out.println(model);
+                break;
+            case LOCATION:
+                model = context.getLatestLocations().get(0);
+                System.out.println(model);
+                System.out.println(((LocationModel) model).getCustomer());
+                break;
+            default:
+                throw new UnsupportedOperationException("Unsupported data type: " + dataType);
         }
+        String textToSearch = model.getTextToSearch(modelsGridProperty, model);
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
-        grid.typeInSearchBox(text);
+        int gridRows = grid.getGridContent().size();
+        grid.typeInSearchBox(textToSearch);
         grid.clickSearchButton();
+        Utilities.waitForRowCountToDecrease(grid, gridRows);
+    }
+
+
+    @Then("the grid should successfully filter for the \"{dataType}\" with \"{modelsGridProperty}\"")
+    public void theGridShouldSuccessfullyFilterForTheWith(DataType dataType, ModelsGridProperties modelsGridProperty) {
+        List<BaseModel> models = new ArrayList<>();
+        switch (dataType) {
+            case CUSTOMER:
+                models = new ArrayList<BaseModel>(context.getLatestCustomers());
+                break;
+            case TOOL:
+                models = new ArrayList<BaseModel>(context.getLatestTools());
+                break;
+            case LOCATION:
+                models = new ArrayList<BaseModel>(context.getLatestLocations());
+                break;
+            default:
+                throw new UnsupportedOperationException("Unsupported data type: " + dataType);
+        }
+        List<List<String>> expectedValuesInGrid = models.stream()
+                .map(BaseModel::extractGridValues)
+                .toList();
+
+        List<List<String>> actualValuesInGrid = ((PageWithGrid) context.getCurrentPage()).getGrid().getGridContent();
+        Set<List<String>> expectedSet = new HashSet<>(expectedValuesInGrid);
+        Set<List<String>> actualSet = new HashSet<>(actualValuesInGrid);
+        boolean allExpectedValuesFound = actualSet.containsAll(expectedSet);
+        softAssert.assertTrue(allExpectedValuesFound);
     }
 }

@@ -15,8 +15,8 @@ public class ApiSteps extends StepDefinitionBase {
         super(context);
     }
 
-    @Given("I request {int} {dataType} data through the API: {string}")
-    public void iRequestDataThroughTheAPI(int count, DataType modelName, String url) {
+    @Given("I request {int} \"{dataType}\" data through the API: {string}")
+    public void iRequestDataThroughTheAPI(int count, DataType modelName, String url) throws Exception {
         TestDataCreator testDataCreator = new TestDataCreator();
         url = url + "?size=" + count;
         switch (modelName) {

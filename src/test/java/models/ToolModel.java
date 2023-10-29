@@ -1,6 +1,11 @@
 package models;
 
-public class ToolModel extends ParentModel {
+import enums.ModelsGridProperties;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ToolModel extends BaseModel {
 
     private String manufacturer;
     private String model;
@@ -56,4 +61,22 @@ public class ToolModel extends ParentModel {
     public void setInService(Boolean isInService) {
         this.isInService = isInService;
     }
+
+    @Override
+    public List<String> extractGridValues() {
+        List<String> values = new ArrayList<>();
+        values.add(getName());
+        values.add(getCustomerName());
+        values.add(getCustomer().getLocation().getFullAddress());
+        values.add(getPlatform());
+        values.add(getSerial_number());
+        values.add(getInService() ? "true" : "false");
+        return values;
+    }
+
+    @Override
+    public String getTextToSearch(ModelsGridProperties modelsGridProperty, BaseModel modelObj) {
+        return modelsGridProperty.extractValue(modelObj);
+    }
+
 }

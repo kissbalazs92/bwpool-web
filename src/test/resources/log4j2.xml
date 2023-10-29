@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="detailedLogger" target="SYSTEM_OUT">
+            <PatternLayout charset="UTF-8" pattern="\t[%-5level] %d{HH:mm:ss} - %msg%n"/>
+        </Console>
+        <Console name="simpleLogger" target="SYSTEM_OUT">
+            <PatternLayout charset="UTF-8" pattern="%msg%n"/>
+        </Console>
+        <Console name="cucumberStepsLogger" target="SYSTEM_OUT">
+            <PatternLayout charset="UTF-8" pattern="%highlight{%msg%n}{FATAL=red, ERROR=red, WARN=yellow, INFO=green}" disableAnsi="false"/>
+        </Console>
+        <Console name="rootLogger" target="SYSTEM_OUT">
+            <PatternLayout charset="UTF-8" pattern="[%-5level] %d{HH:mm:ss} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="cucumber" level="info" additivity="false">
+            <AppenderRef ref="cucumberStepsLogger"/>
+        </Logger>
+        <Logger name="simpleLogger" level="info" additivity="false">
+            <AppenderRef ref="simpleLogger"/>
+        </Logger>
+        <Logger name="detailedLogger" level="info" additivity="false">
+            <AppenderRef ref="detailedLogger"/>
+        </Logger>
+        <Root level="info">
+            <AppenderRef ref="rootLogger"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -4,6 +4,7 @@ import models.CustomerModel;
 import models.LocationModel;
 import models.ToolModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScenarioContext {
@@ -11,6 +12,7 @@ public class ScenarioContext {
     private List<CustomerModel> latestCustomers;
     private List<ToolModel> latestTools;
     private List<LocationModel> latestLocations;
+    private List<CustomerModel> allRegisteredCustomers;
 
     public void setCurrentPage(Object page) {
         this.currentPage = page;
@@ -42,6 +44,18 @@ public class ScenarioContext {
 
     public void setLatestLocations(List<LocationModel> latestLocations) {
         this.latestLocations = latestLocations;
+    }
+
+    public List<CustomerModel> getAllRegisteredCustomers() {
+        return allRegisteredCustomers;
+    }
+
+    public void addCustomerToAllRegisteredCustomers(List<CustomerModel> customers) {
+        if (allRegisteredCustomers == null) {
+            allRegisteredCustomers = new ArrayList<>();
+        }
+        this.allRegisteredCustomers.addAll(customers);
+        System.out.println("All registered customers: " + allRegisteredCustomers);
     }
 }
 

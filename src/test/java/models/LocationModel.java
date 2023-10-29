@@ -1,36 +1,63 @@
 package models;
 
-public record LocationModel(CustomerModel costumer) {
+import enums.ModelsGridProperties;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class LocationModel extends BaseModel {
+
+    private final CustomerModel customer;
+
+    public LocationModel(CustomerModel customer) {
+        this.customer = customer;
+    }
 
     public String getCustomerName() {
-        return costumer.getName();
+        return customer.getName();
     }
 
     public String getCity() {
-        return costumer.getCity();
+        return customer.getCity();
     }
 
     public String getZip_code() {
-        return costumer.getZip_code();
+        return customer.getZip_code();
     }
 
     public String getStreet_name() {
-        return costumer.getStreet_name();
+        return customer.getStreet_name();
     }
 
     public String getHouseNumber() {
-        return costumer.getHouseNumber();
+        return customer.getHouseNumber();
     }
 
     public String getFullAddress() {
-        return (costumer.getZip_code()
-                + " " + costumer.getCity()
-                + ", " + costumer.getStreet_name()
-                + " " + costumer.getHouseNumber()).trim();
+        return (customer.getZip_code()
+                + " " + customer.getCity()
+                + ", " + customer.getStreet_name()
+                + " " + customer.getHouseNumber()).trim();
     }
 
     public CustomerModel getCustomer() {
-        return costumer;
+        return customer;
+    }
+
+    @Override
+    public List<String> extractGridValues() {
+        List<String> values = new ArrayList<>();
+        values.add(getCustomerName());
+        values.add(getCity());
+        values.add(getZip_code());
+        values.add(getStreet_name());
+        values.add(getHouseNumber());
+        return values;
+    }
+
+    @Override
+    public String getTextToSearch(ModelsGridProperties modelsGridProperty, BaseModel modelObj) {
+        return modelsGridProperty.extractValue(modelObj);
     }
 
 }

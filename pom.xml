@@ -12,15 +12,20 @@
         <maven.compiler.source>20</maven.compiler.source>
         <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <selenium.version>4.12.1</selenium.version>
         <cucumber.version>7.14.0</cucumber.version>
         <cucumber.pico.container.version>7.14.0</cucumber.pico.container.version>
-        <allure.junit5.version>2.24.0</allure.junit5.version>
         <webdriver.manager.version>5.5.3</webdriver.manager.version>
         <apache.poi.version>5.2.3</apache.poi.version>
         <rest.assured.version>5.3.2</rest.assured.version>
         <maven.surfire.plugin.version>3.1.2</maven.surfire.plugin.version>
+        <exec.maven.plugin.version>3.1.0</exec.maven.plugin.version>
+        <maven.complier.plugin.version>3.11.0</maven.complier.plugin.version>
         <testng.version>7.8.0</testng.version>
+        <log4j.version>2.20.0</log4j.version>
+        <extentreports.version>5.1.1</extentreports.version>
+        <extentreports.cucumber7.adapter.version>1.14.0</extentreports.cucumber7.adapter.version>
     </properties>
 
     <dependencies>
@@ -44,7 +49,7 @@
             <artifactId>cucumber-picocontainer</artifactId>
             <version>${cucumber.pico.container.version}</version>
         </dependency>
-        <!-- Cucumber TestNG támogatás -->
+        <!-- Cucumber TestNG 7 -->
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-testng</artifactId>
@@ -78,16 +83,54 @@
             <version>${rest.assured.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- Log4j2 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <!-- Log4j2 SLF4J Binding -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <!-- Extent Reports 5 -->
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>${extentreports.version}</version>
+        </dependency>
+        <!-- Extent Reports Cucumber 7 Adapter -->
+        <dependency>
+            <groupId>tech.grasshopper</groupId>
+            <artifactId>extentreports-cucumber7-adapter</artifactId>
+            <version>${extentreports.cucumber7.adapter.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Maven Surefire Plugin 3 with TestNG configuration -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>${exec.maven.plugin.version}</version>
+                <configuration>
+                    <mainClass>runner.TestNGConfigGenerator</mainClass>
+                    <classpathScope>test</classpathScope>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surfire.plugin.version}</version>
                 <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>

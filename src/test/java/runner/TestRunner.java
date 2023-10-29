@@ -1,29 +1,47 @@
 package runner;
 
+import io.cucumber.java.BeforeAll;
 import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Parameters;
-import org.testng.annotations.Test;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
+import org.testng.annotations.*;
+import utils.Configurations;
 import utils.DriverManager;
+import utils.LoggerClass;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 @Test
 @CucumberOptions(
         features = "src/test/resources/features",
         glue = "stepdefinitions",
-        plugin = {"pretty", "html:target/cucumber-reports"}
+        plugin = {"html:target/cucumber-reports", "listeners.CustomCucumberListener"}
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
 
+    public static String browser;
+    public static String resolution;
+    public static String testName;
+
+
     @BeforeSuite
-    @Parameters({"browser"})
-    public void setup(String browser) {
-        DriverManager.getInstance().initializeDriver(browser);
+    public void beforeSuite() {
+        LoggerClass.infoSimple("--------------------------------------------------------------");
+        LoggerClass.infoSimple(" T E S T S");
+        LoggerClass.infoSimple("--------------------------------------------------------------");
+        LoggerClass.infoRoot("Running Tests With Configurations:");
+        LoggerClass.infoSimple("\t- Browsers: " + Arrays.toString(Configurations.getBrowsers()));
+        LoggerClass.infoSimple("\t- Resolutions: " + Arrays.toString(Configurations.getResolutions()) + "\n");
     }
 
-    @AfterSuite
-    public void tearDown() {
-        DriverManager.getInstance().quitDriver();
+    @BeforeMethod
+    @Parameters({"browser", "resolution"})
+    public void logTestName(String  browser, String resolution, ITestContext context) {
+        TestRunner.browser = browser;
+        TestRunner.resolution = resolution;
+        testName = context.getCurrentXmlTest().getName();
+
     }
 }

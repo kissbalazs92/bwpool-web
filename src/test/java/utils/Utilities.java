@@ -1,15 +1,10 @@
 package utils;
 
-import components.GridDialog;
+import components.Grid;
 import models.CustomerModel;
-import models.ParentModel;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.Wait;
+import models.BaseModel;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -19,16 +14,45 @@ import java.util.Map;
 
 public class Utilities {
 
-    private static final WebDriver driver = DriverManager.getInstance().getDriver();
-
     public static void click(WebElement element) {
-        Wait<WebDriver> wait = Configurations.getWait();
-        wait.until(ExpectedConditions.elementToBeClickable(element));
-        element.click();
+        final int maxAttempts = 5;
+        int attempts = 0;
+
+        // Példányosítunk egy FluentWait objektumot.
+        Wait<WebDriver> wait = new FluentWait<>(DriverManager.getInstance().getDriver())
+                .withTimeout(Duration.ofSeconds(10))  // összes várakozási idő
+                .pollingEvery(Duration.ofSeconds(1))  // próbálkozások közötti intervallum
+                .ignoring(NoSuchElementException.class);
+
+        // Próbálkozások száma a kattintásra
+        while (attempts < maxAttempts) {
+            try {
+                wait.until(ExpectedConditions.elementToBeClickable(element));
+                element.click();
+                break; // Ha a kattintás sikeres volt, kilépünk a ciklusból.
+            } catch (StaleElementReferenceException | ElementClickInterceptedException e) {
+                // Ha kivétel történt, újra próbálkozunk az elem megtalálásával és kattintással.
+                if (++attempts >= maxAttempts) {
+                    throw new RuntimeException("Failed to click element after " + attempts + " attempts", e);
+                }
+                By locator = getLocatorFromElement(element);
+                element = DriverManager.getInstance().getDriver().findElement(locator);
+                // Az újrapróbálkozás logikája a FluentWait beállításai alapján történik, így nincs szükség közvetlenül a Thread.sleep használatára.
+            }
+        }
     }
+
 
     public static void waitForElement(WebElement element) {
         Wait<WebDriver> wait = Configurations.getWait();
+        wait.until(ExpectedConditions.visibilityOf(element));
+    }
+
+    public static void waitForElement(WebElement element, int timeoutInSec) {
+        Wait<WebDriver> wait = new FluentWait<>(DriverManager.getInstance().getDriver())
+                .withTimeout(Duration.ofSeconds(timeoutInSec))
+                .pollingEvery(Duration.ofMillis(500))
+                .ignoring(Exception.class);
         wait.until(ExpectedConditions.visibilityOf(element));
     }
 
@@ -46,12 +70,17 @@ public class Utilities {
     public static void typeInDropdown(WebElement element, String text, WebElement dropdown) {
         waitForElement(element);
         element.sendKeys(text);
-        waitForElement(dropdown);
-        removeElement(dropdown);
+        try {
+            waitForElement(dropdown, 3);
+            removeElement(dropdown);
+        }
+        catch (Exception ignored) {
+
+        }
     }
 
     public static void removeElement(WebElement element) {
-        ((JavascriptExecutor) driver).executeScript(
+        ((JavascriptExecutor) DriverManager.getInstance().getDriver()).executeScript(
                 "var element = arguments[0];" +
                     "element.parentNode.removeChild(element);", element
         );
@@ -68,7 +97,7 @@ public class Utilities {
         return allElementsFound;
     }
 
-    public static void setProperties(ParentModel model, Map<String, String> properties) {
+    public static void setProperties(BaseModel model, Map<String, String> properties) {
         for (Map.Entry<String, String> entry : properties.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
@@ -97,4 +126,68 @@ public class Utilities {
         wait.until(ExpectedConditions.textToBePresentInElementLocated(By.xpath("//*[contains(text(),'" + text + "')]"), text));
     }
 
+    public static By getLocatorFromElement(WebElement element) {
+        String description = getElementDescription(element);
+
+        String[] parts = description.split(": ", 2);
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("Invalid locator description: " + description);
+        }
+
+        String byMethod = parts[0].trim();
+        String value = parts[1].trim();
+
+        switch (byMethod) {
+            case "xpath":
+                return By.xpath(value);
+            case "id":
+                return By.id(value);
+            case "className":
+                return By.className(value);
+            case "tagName":
+                return By.tagName(value);
+            case "name":
+                return By.name(value);
+            case "linkText":
+                return By.linkText(value);
+            case "partialLinkText":
+                return By.partialLinkText(value);
+            case "cssSelector":
+                return By.cssSelector(value);
+            default:
+                throw new IllegalArgumentException("Unknown locator method: " + byMethod);
+        }
+    }
+    public static String getElementDescription(WebElement element) {
+        String desc = element.toString();
+        //System.out.println("Description: " + desc);
+        int lastArrowIndex = desc.lastIndexOf("->");
+        if (lastArrowIndex != -1) {
+            desc = desc.substring(lastArrowIndex + 2).trim();
+            //System.out.println("Description after substring: " + desc);
+            if (desc.endsWith("]]")) {
+                desc = desc.substring(0, desc.length() - 1);
+                //System.out.println("Description after substring2: " + desc);
+            } else if (desc.endsWith("]}")) {
+                desc = desc.substring(0, desc.length() - 2);
+                //System.out.println("Description after substring3: " + desc);
+            }
+        }
+        return desc.trim();
+    }
+
+    public static void waitForRowCountToDecrease(Grid grid, int initialRowCount) {
+        if(initialRowCount == 1) {
+            return;
+        }
+        if(grid.getGridContent().size() < initialRowCount) {
+            return;
+        }
+        try {
+            FluentWait<WebDriver> wait = Configurations.getWait();
+            wait.until(driver -> grid.getGridContent().size() < initialRowCount);
+        } catch (TimeoutException e) {
+            throw new RuntimeException("Failed to wait for row count to decrease", e);
+        }
+    }
 }

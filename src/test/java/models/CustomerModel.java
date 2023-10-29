@@ -1,6 +1,11 @@
 package models;
 
-public class CustomerModel extends ParentModel {
+import enums.ModelsGridProperties;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomerModel extends BaseModel {
 
     private String id;
     private String first_name;
@@ -9,6 +14,7 @@ public class CustomerModel extends ParentModel {
     private String phone;
     private final String houseNumber = ""; //nincs ilyen json válasz, ezért előre be kell állítani üresre
     private LocationModel location;
+    private List<ToolModel> tools;
     private Address address;
 
     public static class Address {
@@ -73,4 +79,31 @@ public class CustomerModel extends ParentModel {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public List<ToolModel> getTools() {
+        return tools;
+    }
+
+    public void addTool(ToolModel tool) {
+        if (tools == null) {
+            tools = new ArrayList<>();
+        }
+        tools.add(tool);
+    }
+
+    @Override
+    public List<String> extractGridValues() {
+        List<String> values = new ArrayList<>();
+        values.add(getName());
+        values.add(getEmail());
+        values.add(getPhone());
+        values.add(getId());
+        return values;
+    }
+
+    @Override
+    public String getTextToSearch(ModelsGridProperties modelsGridProperty, BaseModel modelObj) {
+        return modelsGridProperty.extractValue(modelObj);
+    }
+
 }

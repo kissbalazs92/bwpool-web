@@ -80,9 +80,10 @@ public class Grid {
         }
 
         if (modelName.toLowerCase().contains("customer")) {
-            List<CustomerModel> costumers = context.getLatestCustomers();
+            List<CustomerModel> customers = context.getLatestCustomers();
+            List<CustomerModel> customersToAdd = new ArrayList<>();
             for (int i = 0; i < count; i++) {
-                CustomerModel customer = costumers.get(i);
+                CustomerModel customer = customers.get(i);
                 Utilities.setProperties(customer, diffValues);
                 grid.clickAddButton();
                 grid.getGridDialog().registerCustomer(customer);
@@ -90,7 +91,9 @@ public class Grid {
                     GridSteps gridSteps = new GridSteps(context);
                     gridSteps.iSaveTheForm();
                 }
+                customersToAdd.add(customer);
             }
+            context.addCustomerToAllRegisteredCustomers(customersToAdd);
         } else if (modelName.toLowerCase().contains("tool")) {
             List<ToolModel> tools = context.getLatestTools();
             for (int i = 0; i < count; i++) {

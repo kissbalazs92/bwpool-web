@@ -1,12 +1,17 @@
 package utils;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import listeners.CustomWebDriverListener;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
+import org.openqa.selenium.support.events.EventFiringDecorator;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DriverManager {
 
@@ -32,13 +37,16 @@ public class DriverManager {
         return driver;
     }
 
-    public void initializeDriver(String browserType) {
+    public void initializeDriver(String browserType, String resolution) {
         String downloadPath = Configurations.getDownloadFolder();
         switch (browserType.toLowerCase()) {
             case "chrome":
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
-                chromeOptions.addArguments("download.default_directory=" + downloadPath);
+                Map<String, Object> prefs = new HashMap<>();
+                prefs.put("download.default_directory", downloadPath);
+                chromeOptions.setExperimentalOption("prefs", prefs);
+                chromeOptions.addArguments("--headless"); // Headless mód bekapcsolása
                 driver = new ChromeDriver(chromeOptions);
                 break;
             case "firefox":
@@ -47,14 +55,19 @@ public class DriverManager {
                 FirefoxProfile profile = new FirefoxProfile();
                 profile.setPreference("browser.download.dir", downloadPath);
                 profile.setPreference("browser.download.folderList", 2);
+                profile.setPreference("browser.download.useDownloadDir", true);
+                profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream,application/vnd.ms-excel");
                 firefoxOptions.setProfile(profile);
+                //firefoxOptions.addArguments("--headless"); // Headless mód bekapcsolása
                 driver = new FirefoxDriver(firefoxOptions);
                 break;
             default:
                 throw new IllegalArgumentException("Unsupported browser: " + browserType);
         }
+        CustomWebDriverListener webDriverListener = new CustomWebDriverListener();
+        EventFiringDecorator<WebDriver> decorator = new EventFiringDecorator<>(webDriverListener);
+        driver = decorator.decorate(driver);
     }
-
 
     public void quitDriver() {
         if (driver != null) {

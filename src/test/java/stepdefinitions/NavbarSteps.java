@@ -15,8 +15,8 @@ public class NavbarSteps extends StepDefinitionBase {
         super(context);
     }
 
-    @When("I navigate to the {pageType} page")
-    public void iNavigateToThePage(PageType pageName) {
+    @When("I navigate to the \"{pageType}\"")
+    public void iNavigateToThe(PageType pageName) {
         Navbar navbar = new Navbar(DriverManager.getInstance().getDriver());
         Object currentPage = navbar.navigateTo(pageName.getName());
         context.setCurrentPage(currentPage);
