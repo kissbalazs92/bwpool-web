@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ToolModel extends BaseModel {
-
+    private String columnHeaderId;
     private String manufacturer;
     private String model;
     private String serial_number;
@@ -63,6 +63,21 @@ public class ToolModel extends BaseModel {
     }
 
     @Override
+    public String getColumnHeaderId() {
+        return columnHeaderId;
+    }
+
+    @Override
+    public String getPartnerName() {
+        return customer.getName();
+    }
+
+    @Override
+    public void setColumnHeaderId(String columnHeaderId) {
+        this.columnHeaderId = columnHeaderId;
+    }
+
+    @Override
     public List<String> extractGridValues() {
         List<String> values = new ArrayList<>();
         values.add(getName());
@@ -78,5 +93,4 @@ public class ToolModel extends BaseModel {
     public String getTextToSearch(ModelsGridProperties modelsGridProperty, BaseModel modelObj) {
         return modelsGridProperty.extractValue(modelObj);
     }
-
 }

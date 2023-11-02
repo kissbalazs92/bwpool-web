@@ -39,16 +39,14 @@ Feature: Customer, Locations, and Tools Menu Usage
     When I filter for the "Location" based on "customerName" in the Search field
     Then the grid should successfully filter for the "Location" with "customerName"
 
-    When I click on the URL in the "Utca" field
-    Then the "Location" information page should open
+    When I click on the URL in "Telephelyek grid" in the "Utca" field
+    Then the "LocationInfo page" should open
+    And the file named "Export.xlsx" should contain the "Tool" data from the LocationInfo page
 
-    And I compare the exported file named "Export.xlsx" with the list of "Tools" on the "Location" page
-    Then the "Tools" in the file named "Export.xlsx" should match the grid on the "Location" page
+    When I navigate to the "Tool page"
+    Then the "Eszközök grid" should appear
 
-    When I navigate to the "Eszközök" page
-    Then the "Eszközök" grid should appear
-
-    And I select a "Tool" from the previously recorded "Tools"
+    And I select a previously recorded "Tool"
     Then the "Tool" should be selected
 
     When I click on the "Edit" button
@@ -56,11 +54,12 @@ Feature: Customer, Locations, and Tools Menu Usage
 
     And I check the "Szervíz" checkbox
     And I save the form
-    Then the "Tool" should be marked as "in service" in the grid
+    Then the in service should be "True" for the "Tool" in the grid
 
-    When I navigate to the "Location" page
-    And I select a "Location" from the previously recorded "Locations"
+    When I navigate to the "Location page"
+    And I select a previously recorded "Location"
     Then the "Location" should be selected
 
-    When I click on the URL in the "Utca" field
-    Then the "Location" information page should open
+    When I click on the URL in "Telephelyek grid" in the "Utca" field
+    Then the "LocationInfo page" should open
+    And the "Tool" in service should not be on the list

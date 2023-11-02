@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LocationModel extends BaseModel {
-
+    private String columnHeaderId;
+    private String debt = "-";
     private final CustomerModel customer;
 
     public LocationModel(CustomerModel customer) {
@@ -45,6 +46,25 @@ public class LocationModel extends BaseModel {
     }
 
     @Override
+    public String getColumnHeaderId() {
+        return columnHeaderId;
+    }
+
+    @Override
+    public String getPartnerName() {
+        return customer.getName();
+    }
+
+    @Override
+    public void setColumnHeaderId(String gridUid) {
+        this.columnHeaderId = gridUid;
+    }
+
+    public String getDebt() {
+        return debt;
+    }
+
+    @Override
     public List<String> extractGridValues() {
         List<String> values = new ArrayList<>();
         values.add(getCustomerName());
@@ -58,6 +78,20 @@ public class LocationModel extends BaseModel {
     @Override
     public String getTextToSearch(ModelsGridProperties modelsGridProperty, BaseModel modelObj) {
         return modelsGridProperty.extractValue(modelObj);
+    }
+
+    public List<String> extractInfo() {
+        List<String> values = new ArrayList<>();
+        values.add(getCustomerName());
+        values.add(getFullAddress());
+        values.add(customer.getPhone());
+        values.add(customer.getEmail());
+        values.add(getDebt());
+        values.add(customer.getId());
+        for (ToolModel tool : customer.getTools()) {
+            values.add(tool.getName());
+        }
+        return values;
     }
 
 }

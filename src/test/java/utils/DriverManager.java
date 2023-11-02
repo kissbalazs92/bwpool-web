@@ -46,7 +46,7 @@ public class DriverManager {
                 Map<String, Object> prefs = new HashMap<>();
                 prefs.put("download.default_directory", downloadPath);
                 chromeOptions.setExperimentalOption("prefs", prefs);
-                chromeOptions.addArguments("--headless"); // Headless mód bekapcsolása
+                chromeOptions.addArguments("--headless");
                 driver = new ChromeDriver(chromeOptions);
                 break;
             case "firefox":
@@ -58,7 +58,7 @@ public class DriverManager {
                 profile.setPreference("browser.download.useDownloadDir", true);
                 profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream,application/vnd.ms-excel");
                 firefoxOptions.setProfile(profile);
-                //firefoxOptions.addArguments("--headless"); // Headless mód bekapcsolása
+                //firefoxOptions.addArguments("--headless");
                 driver = new FirefoxDriver(firefoxOptions);
                 break;
             default:

@@ -9,35 +9,34 @@ import org.openqa.selenium.support.ui.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 
 public class Utilities {
 
     public static void click(WebElement element) {
         final int maxAttempts = 5;
         int attempts = 0;
-
-        // Példányosítunk egy FluentWait objektumot.
-        Wait<WebDriver> wait = new FluentWait<>(DriverManager.getInstance().getDriver())
-                .withTimeout(Duration.ofSeconds(10))  // összes várakozási idő
-                .pollingEvery(Duration.ofSeconds(1))  // próbálkozások közötti intervallum
-                .ignoring(NoSuchElementException.class);
-
-        // Próbálkozások száma a kattintásra
+        Wait<WebDriver> wait = Configurations.getWait();
         while (attempts < maxAttempts) {
             try {
                 wait.until(ExpectedConditions.elementToBeClickable(element));
                 element.click();
-                break; // Ha a kattintás sikeres volt, kilépünk a ciklusból.
-            } catch (StaleElementReferenceException | ElementClickInterceptedException e) {
-                // Ha kivétel történt, újra próbálkozunk az elem megtalálásával és kattintással.
+                break;
+            } catch (Exception e) {
                 if (++attempts >= maxAttempts) {
                     throw new RuntimeException("Failed to click element after " + attempts + " attempts", e);
                 }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
                 By locator = getLocatorFromElement(element);
                 element = DriverManager.getInstance().getDriver().findElement(locator);
-                // Az újrapróbálkozás logikája a FluentWait beállításai alapján történik, így nincs szükség közvetlenül a Thread.sleep használatára.
             }
         }
     }
@@ -87,16 +86,21 @@ public class Utilities {
     }
 
     public static Boolean isExpectedListContainedInActualList(List<List<String>> actualList, List<List<String>> expectedList) {
-        boolean allElementsFound = true;
-        for (List<String> expectedElement : expectedList) {
-            if (!actualList.contains(expectedElement)) {
-                allElementsFound = false;
-                break;
+        System.out.println("MÉG CSAK MOST ELLENŐRIZZÜK HOGY RENDBEN VAN-E A LISTA");
+        for (List<String> singleExpected : expectedList) {
+            boolean found = false;
+            for (List<String> actualElement : actualList) {
+                if (actualElement.equals(singleExpected)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
             }
         }
-        return allElementsFound;
+        return true;
     }
-
     public static void setProperties(BaseModel model, Map<String, String> properties) {
         for (Map.Entry<String, String> entry : properties.entrySet()) {
             String key = entry.getKey();
@@ -160,18 +164,12 @@ public class Utilities {
     }
     public static String getElementDescription(WebElement element) {
         String desc = element.toString();
-        //System.out.println("Description: " + desc);
+        System.out.println("Desc átalakítás előtt: " + desc);
         int lastArrowIndex = desc.lastIndexOf("->");
         if (lastArrowIndex != -1) {
-            desc = desc.substring(lastArrowIndex + 2).trim();
-            //System.out.println("Description after substring: " + desc);
-            if (desc.endsWith("]]")) {
-                desc = desc.substring(0, desc.length() - 1);
-                //System.out.println("Description after substring2: " + desc);
-            } else if (desc.endsWith("]}")) {
-                desc = desc.substring(0, desc.length() - 2);
-                //System.out.println("Description after substring3: " + desc);
-            }
+            desc = desc.substring(lastArrowIndex + 2, desc.length() - 1).trim();
+            System.out.println("Desc: " + desc);
+            desc = desc.replaceAll("]]", "]");
         }
         return desc.trim();
     }
@@ -180,14 +178,41 @@ public class Utilities {
         if(initialRowCount == 1) {
             return;
         }
-        if(grid.getGridContent().size() < initialRowCount) {
-            return;
-        }
         try {
             FluentWait<WebDriver> wait = Configurations.getWait();
-            wait.until(driver -> grid.getGridContent().size() < initialRowCount);
+            wait.until(driver -> grid.getRowsCount() < initialRowCount);
         } catch (TimeoutException e) {
             throw new RuntimeException("Failed to wait for row count to decrease", e);
         }
     }
+
+    public static boolean areAllElementsSameAtColumn(List<List<String>> listOfLists, int index) {
+        if (listOfLists.isEmpty() || listOfLists.get(0).size() <= index) {
+            return false;
+        }
+        String referenceElement = listOfLists.get(0).get(index);
+        for (List<String> innerList : listOfLists) {
+            System.out.println("Inner list: " + innerList);
+            if (innerList.size() <= index || !innerList.get(index).equals(referenceElement)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static void scrollAndClick(WebElement element) {
+        JavascriptExecutor js = (JavascriptExecutor) DriverManager.getInstance().getDriver();
+        int attempts = 0;
+        while(attempts < 3) {
+            try {
+                js.executeScript("arguments[0].scrollIntoView();", element);
+                click(element);
+                break;
+            } catch (StaleElementReferenceException e) {
+                attempts++;
+            }
+        }
+    }
+
+
 }

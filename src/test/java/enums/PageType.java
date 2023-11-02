@@ -6,7 +6,8 @@ public enum PageType {
     CUSTOMER("Customer"),
     LOCATION("Location"),
     TOOL("Tool"),
-    CALENDAR("Calendar");
+    CALENDAR("Calendar"),
+    LOCATION_INFO("LocationInfo");
 
     private final String name;
 

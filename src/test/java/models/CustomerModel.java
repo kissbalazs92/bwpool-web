@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerModel extends BaseModel {
-
+    private String columnHeaderId;
     private String id;
     private String first_name;
     private String last_name;
@@ -92,6 +92,21 @@ public class CustomerModel extends BaseModel {
     }
 
     @Override
+    public String getColumnHeaderId() {
+        return columnHeaderId;
+    }
+
+    @Override
+    public String getPartnerName() {
+        return getName();
+    }
+
+    @Override
+    public void setColumnHeaderId(String gridUid) {
+        this.columnHeaderId = gridUid;
+    }
+
+    @Override
     public List<String> extractGridValues() {
         List<String> values = new ArrayList<>();
         values.add(getName());
@@ -105,5 +120,4 @@ public class CustomerModel extends BaseModel {
     public String getTextToSearch(ModelsGridProperties modelsGridProperty, BaseModel modelObj) {
         return modelsGridProperty.extractValue(modelObj);
     }
-
 }

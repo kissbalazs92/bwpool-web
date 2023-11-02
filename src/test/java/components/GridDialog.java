@@ -18,6 +18,9 @@ public class GridDialog {
     @FindBy(id = "Grid_dialogEdit_wrapper_title")
     private WebElement dialogTitle;
 
+    @FindBy(xpath = "//*[@id='Grid_dialogEdit_wrapper_title']/h4")
+    private WebElement titleText;
+
     @FindBy(xpath = "//button[text()='Save']")
     private WebElement saveButton;
 
@@ -72,6 +75,10 @@ public class GridDialog {
 
     public WebElement getDialogTitle() {
         return dialogTitle;
+    }
+
+    public String getDialogTitleText() {
+        return dialogTitle.getText();
     }
 
     public void fillDialogInput(String text, WebElement element) {

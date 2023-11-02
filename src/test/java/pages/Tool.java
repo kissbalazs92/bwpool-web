@@ -2,15 +2,17 @@ package pages;
 
 import components.Grid;
 import org.openqa.selenium.WebDriver;
+import utils.Configurations;
 
-public class Tool implements PageWithGrid {
+public class Tool extends BasePage implements PageWithGrid {
 
     private final WebDriver driver;
+    private final String url = Configurations.getURL() + "Tool/";
     private final Grid grid;
 
     public Tool(WebDriver driver) {
         this.driver = driver;
-        this.grid = new Grid(driver);
+        this.grid = new Grid(driver, this);
     }
 
     @Override
@@ -18,4 +20,8 @@ public class Tool implements PageWithGrid {
         return grid;
     }
 
+    @Override
+    public String getUrl() {
+        return url;
+    }
 }

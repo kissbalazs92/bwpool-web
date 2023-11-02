@@ -18,7 +18,7 @@ public class Navbar {
 
     public Object navigateTo(String pageName) {
         By locator = By.xpath("//a[@href='" + pageName + "']");
-        Configurations.getWait().until(ExpectedConditions.visibilityOfElementLocated(locator));
+        //Configurations.getWait().until(ExpectedConditions.visibilityOfElementLocated(locator));
         Utilities.click(driver.findElement(locator));
         try {
             String fullClassName = "pages." + pageName;

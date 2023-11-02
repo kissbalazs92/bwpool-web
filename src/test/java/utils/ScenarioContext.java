@@ -1,5 +1,6 @@
 package utils;
 
+import models.BaseModel;
 import models.CustomerModel;
 import models.LocationModel;
 import models.ToolModel;
@@ -13,6 +14,7 @@ public class ScenarioContext {
     private List<ToolModel> latestTools;
     private List<LocationModel> latestLocations;
     private List<CustomerModel> allRegisteredCustomers;
+    private BaseModel modelToBeAddToGrid;
 
     public void setCurrentPage(Object page) {
         this.currentPage = page;
@@ -56,6 +58,14 @@ public class ScenarioContext {
         }
         this.allRegisteredCustomers.addAll(customers);
         System.out.println("All registered customers: " + allRegisteredCustomers);
+    }
+
+    public BaseModel getModelToBeAddToGrid() {
+        return modelToBeAddToGrid;
+    }
+
+    public void setModelToBeAddToGrid(BaseModel modelToBeAddToGrid) {
+        this.modelToBeAddToGrid = modelToBeAddToGrid;
     }
 }
 
