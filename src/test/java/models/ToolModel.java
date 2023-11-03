@@ -7,6 +7,7 @@ import java.util.List;
 
 public class ToolModel extends BaseModel {
     private String columnHeaderId;
+    private String gridNumberWhenRegistered;
     private String manufacturer;
     private String model;
     private String serial_number;
@@ -75,6 +76,14 @@ public class ToolModel extends BaseModel {
     @Override
     public void setColumnHeaderId(String columnHeaderId) {
         this.columnHeaderId = columnHeaderId;
+    }
+
+    public void setGridNumberWhenRegistered(String gridNumberWhenRegistered) {
+        this.gridNumberWhenRegistered = gridNumberWhenRegistered;
+    }
+
+    public String getGridNumberWhenRegistered() {
+        return gridNumberWhenRegistered;
     }
 
     @Override

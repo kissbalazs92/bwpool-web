@@ -27,10 +27,8 @@ public class CustomWebDriverListener implements WebDriverListener {
 
     @Override
     public void onError(Object target, Method method, Object[] args, InvocationTargetException e) {
-        System.out.println("Target: " + target);
-        System.out.println("Method: " +method);
         if(count == 0) {
-            System.out.println(DriverManager.getInstance().getDriver().getPageSource());
+            //System.out.println(DriverManager.getInstance().getDriver().getPageSource());
             count++;
         }
 

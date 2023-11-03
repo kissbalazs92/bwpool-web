@@ -86,7 +86,6 @@ public class Utilities {
     }
 
     public static Boolean isExpectedListContainedInActualList(List<List<String>> actualList, List<List<String>> expectedList) {
-        System.out.println("MÉG CSAK MOST ELLENŐRIZZÜK HOGY RENDBEN VAN-E A LISTA");
         for (List<String> singleExpected : expectedList) {
             boolean found = false;
             for (List<String> actualElement : actualList) {
@@ -164,11 +163,9 @@ public class Utilities {
     }
     public static String getElementDescription(WebElement element) {
         String desc = element.toString();
-        System.out.println("Desc átalakítás előtt: " + desc);
         int lastArrowIndex = desc.lastIndexOf("->");
         if (lastArrowIndex != -1) {
             desc = desc.substring(lastArrowIndex + 2, desc.length() - 1).trim();
-            System.out.println("Desc: " + desc);
             desc = desc.replaceAll("]]", "]");
         }
         return desc.trim();
@@ -192,7 +189,6 @@ public class Utilities {
         }
         String referenceElement = listOfLists.get(0).get(index);
         for (List<String> innerList : listOfLists) {
-            System.out.println("Inner list: " + innerList);
             if (innerList.size() <= index || !innerList.get(index).equals(referenceElement)) {
                 return false;
             }

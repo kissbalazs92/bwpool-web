@@ -9,7 +9,10 @@ import utils.Configurations;
 import utils.DriverManager;
 import utils.LoggerClass;
 
-import java.util.Arrays;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class CucumberHooks {
     @Before
@@ -40,20 +43,25 @@ public class CucumberHooks {
         }
     }
 
-    @After
+    @After(order = 1)
     public void afterScenario(Scenario scenario) {
         if(scenario.getStatus().equals(Status.FAILED)) {
             LoggerClass.infoSimple("--------------------------------------------------------------");
-            LoggerClass.logResultFail("--------- Scenario: [FAILED] ---------" );
+            LoggerClass.logResultFail("===================== Scenario: [FAILED] =====================");
         }else if(scenario.getStatus().equals(Status.PASSED)) {
             LoggerClass.infoSimple("--------------------------------------------------------------");
-            LoggerClass.logResultPass("--------- Scenario: [PASSED] ---------" );
+            LoggerClass.logResultPass("===================== Scenario: [PASSED] =====================" );
         }
     }
 
-
-    @After
+    @After(order = 2)
     public void tearDown() {
+        Path downloadsFolderPath = Paths.get(Configurations.getDownloadFolder() + "/Export.xlsx");
+        try {
+            Files.delete(downloadsFolderPath);
+        } catch (IOException e) {
+            LoggerClass.errorDetailed("Couldn't delete files from downloads folder", e);
+        }
         WebDriver driver = DriverManager.getInstance().getDriver();
         if (driver != null) {
             driver.quit();

@@ -17,7 +17,7 @@ import java.util.Arrays;
 @CucumberOptions(
         features = "src/test/resources/features",
         glue = "stepdefinitions",
-        plugin = {"html:target/cucumber-reports", "listeners.CustomCucumberListener"}
+        plugin = {"html:target/cucumber-reports", "listeners.CustomCucumberListener", "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
 

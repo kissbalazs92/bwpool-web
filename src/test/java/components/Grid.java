@@ -49,7 +49,7 @@ public class Grid {
     @FindBy(xpath = "//thead/tr/th[not(contains(@class, 'e-hide'))]")
     private List<WebElement> headers;
 
-    private By firstRowHiddenColumnLocator = By.xpath("//tbody/tr[1]/td[1]");
+    private By nthRowHiddenColumnLocator = By.xpath("//tbody/tr[1]/td[1]");
 
     public Grid(WebDriver driver, PageWithGrid page) {
         this.driver = driver;
@@ -80,8 +80,13 @@ public class Grid {
     }
 
     public String getColumnHeaderId(String rowIndex) {
-        firstRowHiddenColumnLocator = By.xpath("//tbody/tr[" + rowIndex + "]/td[1]");
-        return driver.findElement(firstRowHiddenColumnLocator).getAttribute("aria-label");
+        nthRowHiddenColumnLocator = By.xpath("//tbody/tr[" + rowIndex + "]/td[1]");
+        return driver.findElement(nthRowHiddenColumnLocator).getAttribute("aria-label");
+    }
+
+    public String getGridNumberForTool(String rowIndex) {
+        By gridNumberCell = By.xpath("//tbody/tr[" + rowIndex + "]/td[2]");
+        return driver.findElement(gridNumberCell).getText();
     }
 
     public void register(int count, String modelName, DataTable valuesDifferFromApi, ScenarioContext context) {

@@ -66,8 +66,11 @@ public class LocationInfoSteps extends StepDefinitionBase {
         List<ToolModel> registeredToolsToLocation = location.getCustomer().getTools();
         HashMap<String, String> actualTools = new HashMap<>();
         for (ToolModel tool : registeredToolsToLocation) {
-            if (!tool.getInService()) {
-                actualTools.put(tool.getColumnHeaderId().replaceAll("[^0-9]", ""), tool.getSerial_number());
+            System.out.println(tool.getName());
+            if (tool.getInService()) {
+                actualTools.put(tool.getGridNumberWhenRegistered(), tool.getName());
+                System.out.println("True: " + tool.getName());
+                System.out.println(tool.getGridNumberWhenRegistered());
             }
         }
         System.out.println(actualTools);

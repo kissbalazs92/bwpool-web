@@ -98,6 +98,9 @@ public class GridSteps extends StepDefinitionBase {
         softAssert.assertTrue(grid.checkIfExpectedInGrid(expectedValuesInGrid));
         for (int i = 0; i < models.size(); i++) {
             models.get(i).setColumnHeaderId(grid.getColumnHeaderId(String.valueOf(i+1)));
+            if(models.get(i) instanceof ToolModel) {
+                ((ToolModel) models.get(i)).setGridNumberWhenRegistered(grid.getGridNumberForTool(String.valueOf(i+1)));
+            }
         }
     }
 
@@ -267,6 +270,8 @@ public class GridSteps extends StepDefinitionBase {
         String actualValue = ModelsGridProperties.TOOL_SERVICE.extractValueFromGrid(grid, model.getColumnHeaderId());
         if(model instanceof ToolModel) {
             ((ToolModel) model).setInService(Boolean.parseBoolean(condition));
+            System.out.println("In Service: " + ((ToolModel) model).getName());
+            System.out.println("In Service: " + ((ToolModel) model).getGridNumberWhenRegistered());
         }
         assertEquals(actualValue, condition);
 
