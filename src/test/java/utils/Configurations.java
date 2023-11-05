@@ -78,19 +78,19 @@ public class Configurations {
     }
 
     public static String getDesktopResolution() {
-        return configProperties.getProperty("desktop.resolution");
+        return configProperties.getProperty("resolution.desktop");
     }
 
     public static String getMobileResolution() {
-        return configProperties.getProperty("mobile.resolution");
+        return configProperties.getProperty("resolution.mobile");
     }
 
     public static String getLaptopResolution() {
-        return configProperties.getProperty("laptop.resolution");
+        return configProperties.getProperty("resolution.laptop");
     }
 
     public static String getTabletResolution() {
-        return configProperties.getProperty("tablet.resolution");
+        return configProperties.getProperty("resolution.tablet");
     }
 
     public static String getReportPath() {

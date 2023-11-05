@@ -1,5 +1,7 @@
 package utils;
 
+import enums.BrowserType;
+import enums.ResolutionType;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import listeners.CustomWebDriverListener;
 import org.openqa.selenium.WebDriver;
@@ -37,19 +39,24 @@ public class DriverManager {
         return driver;
     }
 
-    public void initializeDriver(String browserType, String resolution) {
+    public void initializeDriver(BrowserType browserType, ResolutionType resolutionType) {
         String downloadPath = Configurations.getDownloadFolder();
-        switch (browserType.toLowerCase()) {
-            case "chrome":
+        String[] resolutionValues = resolutionType.getResolutionValue().split("x");
+        int width = Integer.parseInt(resolutionValues[0]);
+        int height = Integer.parseInt(resolutionValues[1]);
+
+        switch (browserType) {
+            case CHROME:
                 WebDriverManager.chromedriver().setup();
                 ChromeOptions chromeOptions = new ChromeOptions();
                 Map<String, Object> prefs = new HashMap<>();
                 prefs.put("download.default_directory", downloadPath);
                 chromeOptions.setExperimentalOption("prefs", prefs);
                 chromeOptions.addArguments("--headless");
+                chromeOptions.addArguments(String.format("--window-size=%d,%d", width, height));
                 driver = new ChromeDriver(chromeOptions);
                 break;
-            case "firefox":
+            case FIREFOX:
                 WebDriverManager.firefoxdriver().setup();
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 FirefoxProfile profile = new FirefoxProfile();
@@ -58,16 +65,17 @@ public class DriverManager {
                 profile.setPreference("browser.download.useDownloadDir", true);
                 profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream,application/vnd.ms-excel");
                 firefoxOptions.setProfile(profile);
-                //firefoxOptions.addArguments("--headless");
+                firefoxOptions.addArguments(String.format("--window-size=%d,%d", width, height));
                 driver = new FirefoxDriver(firefoxOptions);
                 break;
             default:
-                throw new IllegalArgumentException("Unsupported browser: " + browserType);
+                throw new IllegalArgumentException("Unsupported browser: " + browserType.getName());
         }
         CustomWebDriverListener webDriverListener = new CustomWebDriverListener();
         EventFiringDecorator<WebDriver> decorator = new EventFiringDecorator<>(webDriverListener);
         driver = decorator.decorate(driver);
     }
+
 
     public void quitDriver() {
         if (driver != null) {
