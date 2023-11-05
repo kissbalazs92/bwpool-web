@@ -6,6 +6,8 @@ import org.openqa.selenium.support.ui.FluentWait;
 import java.io.*;
 import java.time.Duration;
 import java.util.Properties;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Configurations {
 
@@ -21,22 +23,6 @@ public class Configurations {
             fis.close();
         } catch (IOException e) {
             throw new RuntimeException("Failed to read the configuration file", e);
-        }
-    }
-
-    public static void setupExtentProperties() {
-        Properties extentProperties = new Properties();
-        try (InputStream input = new FileInputStream(extentConfPath)) {
-            extentProperties.load(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        extentProperties.setProperty("basefolder.name", configProperties.getProperty("report.folder").replaceAll("\\\\", "/").replaceFirst("/", "") + configProperties.getProperty("report.name"));
-        extentProperties.setProperty("systeminfo.os", System.getProperty("os.name"));
-        try (OutputStream extentOutput = new FileOutputStream(extentConfPath)) {
-            extentProperties.store(extentOutput, null);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -105,5 +91,15 @@ public class Configurations {
 
     public static String getTabletResolution() {
         return configProperties.getProperty("tablet.resolution");
+    }
+
+    public static String getReportPath() {
+        return projectRootPath + configProperties.getProperty("report.folder") + configProperties.getProperty("report.name") + getTimeStamp() + ".html";
+    }
+
+    public static String getTimeStamp() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm");
+        return now.format(formatter);
     }
 }

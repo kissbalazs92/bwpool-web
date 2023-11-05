@@ -1,5 +1,6 @@
 package pages;
 
+import components.Navbar;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -37,5 +38,10 @@ public class LocationInfo extends BasePage {
     @Override
     public String getUrl() {
         return url;
+    }
+
+    @Override
+    public Navbar getNavbar() {
+        return navbar;
     }
 }

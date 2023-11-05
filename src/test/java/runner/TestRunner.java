@@ -11,6 +11,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.*;
 import utils.Configurations;
 import utils.DriverManager;
+import utils.ExtentManager;
 import utils.LoggerClass;
 
 import java.lang.reflect.Method;
@@ -20,30 +21,17 @@ import java.util.Arrays;
 @CucumberOptions(
         features = "src/test/resources/features",
         glue = "stepdefinitions",
-        plugin = {"html:target/cucumber-reports", "listeners.CustomCucumberListener", "com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter:"}
+        plugin = {"html:target/cucumber-reports", "listeners.CustomCucumberListener", "listeners.CustomTestNGListener"}
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
-
     public static String browser;
     public static String resolution;
     public static String testName;
-    public static ExtentReports extent;
-    public static ExtentTest test;
+
 
     @BeforeSuite
     public void beforeSuite() {
-        // Útvonal, ahol a jelentést szeretnéd elmenteni
-        String reportPath = System.getProperty("user.dir") + "/test-output/extentReport.html";
-
-        // A jelentés konfigurációja
-        ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(reportPath);
-        extent = new ExtentReports();
-        extent.attachReporter(htmlReporter);
-
-        // További konfigurációk, például tesztjelentés címének megadása
-        extent.setSystemInfo("Host Name", "Test Machine");
-        extent.setSystemInfo("Environment", "QA");
-        extent.setSystemInfo("User Name", "Test User");
+        ExtentManager.setupExtendReport();
         LoggerClass.infoSimple("--------------------------------------------------------------");
         LoggerClass.infoSimple(" T E S T S");
         LoggerClass.infoSimple("--------------------------------------------------------------");
@@ -63,6 +51,6 @@ public class TestRunner extends AbstractTestNGCucumberTests {
 
     @AfterSuite
     public void flushExtentReports() {
-        extent.flush();
+        ExtentManager.extent.flush();
     }
 }

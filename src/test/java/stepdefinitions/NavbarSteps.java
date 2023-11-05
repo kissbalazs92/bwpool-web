@@ -4,6 +4,7 @@ import components.Navbar;
 import enums.PageType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
+import pages.BasePage;
 import utils.DriverManager;
 import utils.ScenarioContext;
 
@@ -17,8 +18,7 @@ public class NavbarSteps extends StepDefinitionBase {
 
     @When("I navigate to the \"{pageType}\"")
     public void iNavigateToThe(PageType pageName) {
-        Navbar navbar = new Navbar(DriverManager.getInstance().getDriver());
-        Object currentPage = navbar.navigateTo(pageName.getName());
+        Object currentPage = ((BasePage) context.getCurrentPage()).getNavbar().navigateTo(pageName.getName());
         context.setCurrentPage(currentPage);
     }
 

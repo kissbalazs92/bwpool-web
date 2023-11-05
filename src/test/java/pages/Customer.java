@@ -1,6 +1,7 @@
 package pages;
 
 import components.Grid;
+import components.Navbar;
 import org.openqa.selenium.WebDriver;
 import utils.Configurations;
 
@@ -24,5 +25,10 @@ public class Customer extends BasePage implements PageWithGrid {
     @Override
     public String getUrl() {
         return url;
+    }
+
+    @Override
+    public Navbar getNavbar() {
+        return navbar;
     }
 }

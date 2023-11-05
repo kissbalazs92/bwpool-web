@@ -1,6 +1,7 @@
 package pages;
 
 import components.Grid;
+import components.Navbar;
 import org.openqa.selenium.WebDriver;
 import utils.Configurations;
 
@@ -16,5 +17,10 @@ public class Calendar extends BasePage {
     @Override
     public String getUrl() {
         return url;
+    }
+
+    @Override
+    public Navbar getNavbar() {
+        return navbar;
     }
 }

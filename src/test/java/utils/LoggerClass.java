@@ -36,4 +36,8 @@ public class LoggerClass {
     public static void infoRoot(String message) {
         rootLogger.info(message);
     }
+
+    public static void errorRoot(String message) {
+        rootLogger.error(message);
+    }
 }
