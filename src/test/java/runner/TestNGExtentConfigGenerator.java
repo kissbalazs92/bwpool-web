@@ -11,15 +11,48 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Properties;
 
-public class TestNGConfigGenerator {
+public class TestNGExtentConfigGenerator {
 
     public static void main(String[] args) throws Exception {
+        generateTestNGConfig();
+        updateExtentConfiguration();
+    }
+
+    public static void updateExtentConfiguration() {
+        Configurations.setupExtentProperties();
+    }
+
+    /*public static void generateExamplesCSV() {
+        Properties prop = new Properties();
+        try (InputStream input = new FileInputStream(Configurations.getConfPath())) {
+            prop.load(input);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String[] resolutions = prop.getProperty("resolutions").replaceAll("[{}]", "").split(",");
+        String[] browsers = prop.getProperty("browsers").replaceAll("[{}]", "").split(",");
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(Configurations.getConfCSVPath()))) {
+            writer.write("Browser,Resolution\n");
+            for (String browser : browsers) {
+                for (String resolution : resolutions) {
+                    writer.write(browser.trim() + "," + resolution.trim() + "\n");
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }*/
+
+    public static void generateTestNGConfig() throws Exception {
         String[] browsers = Configurations.getBrowsers();
         String[] resolutions = Configurations.getResolutions();
 

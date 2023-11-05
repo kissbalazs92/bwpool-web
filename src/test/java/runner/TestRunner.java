@@ -1,5 +1,8 @@
 package runner;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import io.cucumber.java.BeforeAll;
 import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
@@ -24,10 +27,23 @@ public class TestRunner extends AbstractTestNGCucumberTests {
     public static String browser;
     public static String resolution;
     public static String testName;
-
+    public static ExtentReports extent;
+    public static ExtentTest test;
 
     @BeforeSuite
     public void beforeSuite() {
+        // Útvonal, ahol a jelentést szeretnéd elmenteni
+        String reportPath = System.getProperty("user.dir") + "/test-output/extentReport.html";
+
+        // A jelentés konfigurációja
+        ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(reportPath);
+        extent = new ExtentReports();
+        extent.attachReporter(htmlReporter);
+
+        // További konfigurációk, például tesztjelentés címének megadása
+        extent.setSystemInfo("Host Name", "Test Machine");
+        extent.setSystemInfo("Environment", "QA");
+        extent.setSystemInfo("User Name", "Test User");
         LoggerClass.infoSimple("--------------------------------------------------------------");
         LoggerClass.infoSimple(" T E S T S");
         LoggerClass.infoSimple("--------------------------------------------------------------");
@@ -43,5 +59,10 @@ public class TestRunner extends AbstractTestNGCucumberTests {
         TestRunner.resolution = resolution;
         testName = context.getCurrentXmlTest().getName();
 
+    }
+
+    @AfterSuite
+    public void flushExtentReports() {
+        extent.flush();
     }
 }

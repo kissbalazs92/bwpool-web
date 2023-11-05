@@ -127,7 +127,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>${exec.maven.plugin.version}</version>
                 <configuration>
-                    <mainClass>runner.TestNGConfigGenerator</mainClass>
+                    <mainClass>runner.TestNGExtentConfigGenerator</mainClass>
                     <classpathScope>test</classpathScope>
                 </configuration>
             </plugin>

@@ -3,37 +3,53 @@ package utils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.FluentWait;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.time.Duration;
 import java.util.Properties;
 
 public class Configurations {
 
-    private static final Properties properties = new Properties();
+    private static final Properties configProperties = new Properties();
     private static final String projectRootPath = System.getProperty("user.dir");
     private static final String confPath = projectRootPath + "/src/test/resources/conf.properties";
+    private static final String extentConfPath = projectRootPath + "/src/test/resources/extent.properties";
 
     static {
         try {
             FileInputStream fis = new FileInputStream(confPath);
-            properties.load(fis);
+            configProperties.load(fis);
             fis.close();
         } catch (IOException e) {
             throw new RuntimeException("Failed to read the configuration file", e);
         }
     }
 
+    public static void setupExtentProperties() {
+        Properties extentProperties = new Properties();
+        try (InputStream input = new FileInputStream(extentConfPath)) {
+            extentProperties.load(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        extentProperties.setProperty("basefolder.name", configProperties.getProperty("report.folder").replaceAll("\\\\", "/").replaceFirst("/", "") + configProperties.getProperty("report.name"));
+        extentProperties.setProperty("systeminfo.os", System.getProperty("os.name"));
+        try (OutputStream extentOutput = new FileOutputStream(extentConfPath)) {
+            extentProperties.store(extentOutput, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String getURL() {
-        return properties.getProperty("url");
+        return configProperties.getProperty("url");
     }
 
     public static int getWaitTime() {
-        return Integer.parseInt(properties.getProperty("waitTime"));
+        return Integer.parseInt(configProperties.getProperty("waitTime"));
     }
 
     public static int getDownloadWaitTime() {
-        return Integer.parseInt(properties.getProperty("downloadWaitTime"));
+        return Integer.parseInt(configProperties.getProperty("downloadWaitTime"));
     }
 
     public static FluentWait<WebDriver> getWait() {
@@ -44,30 +60,50 @@ public class Configurations {
     }
 
     public static String getMainPageName() {
-        return properties.getProperty("mainPage");
+        return configProperties.getProperty("mainPage");
     }
 
     public static String getDownloadFolder() {
-        return projectRootPath + properties.getProperty("download.folder");
+        return projectRootPath + configProperties.getProperty("download.folder");
     }
 
     public static String[] getBrowsers() {
-        return extractArray(properties.getProperty("browsers"));
+        return extractArray(configProperties.getProperty("browsers"));
     }
 
     public static String[] getResolutions() {
-        return extractArray(properties.getProperty("resolutions"));
+        return extractArray(configProperties.getProperty("resolutions"));
     }
 
     public static boolean isParallelExecution() {
-        return Boolean.parseBoolean(properties.getProperty("parallel"));
+        return Boolean.parseBoolean(configProperties.getProperty("parallel"));
     }
 
     public static String getParallelThreads() {
-        return properties.getProperty("parallel.threads");
+        return configProperties.getProperty("parallel.threads");
     }
 
     private static String[] extractArray(String property) {
         return property.replaceAll("\\{", "").replaceAll("\\}", "").replaceAll("\"", "").split(",");
+    }
+
+    public static String getConfPath() {
+        return confPath;
+    }
+
+    public static String getDesktopResolution() {
+        return configProperties.getProperty("desktop.resolution");
+    }
+
+    public static String getMobileResolution() {
+        return configProperties.getProperty("mobile.resolution");
+    }
+
+    public static String getLaptopResolution() {
+        return configProperties.getProperty("laptop.resolution");
+    }
+
+    public static String getTabletResolution() {
+        return configProperties.getProperty("tablet.resolution");
     }
 }
