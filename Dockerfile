@@ -21,4 +21,6 @@ COPY . .
 
 RUN mvn dependency:go-offline
 
+RUN chmod +x ./run_tests_linux.sh
+
 CMD ["./run_tests_linux.sh"]
