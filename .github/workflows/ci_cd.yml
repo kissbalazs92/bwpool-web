@@ -6,10 +6,6 @@ on:
       - master
   workflow_dispatch:
     inputs:
-      os:
-        description: 'Operating System'
-        required: false
-        default: 'linux'
       waitTime:
         description: 'Wait Time'
         required: false
@@ -48,11 +44,10 @@ jobs:
       - name: Override properties
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          echo "os=${{ github.event.inputs.os }}" >> src/main/resources/conf.properties
-          echo "waitTime=${{ github.event.inputs.waitTime }}" >> src/main/resources/conf.properties
-          echo "downloadWaitTime=${{ github.event.inputs.downloadWaitTime }}" >> src/main/resources/conf.properties
-          echo "browsers={${{ github.event.inputs.browsers }}}" >> src/main/resources/conf.properties
-          echo "resolutions={${{ github.event.inputs.resolution }}}" >> src/main/resources/conf.properties
+          echo "waitTime=${{ github.event.inputs.waitTime }}" >> src/test/resources/conf.properties
+          echo "downloadWaitTime=${{ github.event.inputs.downloadWaitTime }}" >> src/test/resources/conf.properties
+          echo "browsers={${{ github.event.inputs.browsers }}}" >> src/test/resources/conf.properties
+          echo "resolutions={${{ github.event.inputs.resolution }}}" >> src/test/resources/conf.properties
 
       - name: Build and run tests
         uses: docker/build-push-action@v3
@@ -69,7 +64,7 @@ jobs:
         run: docker run --name cukefm-container cukefm-docker-image:latest
 
       - name: Copy results from container
-        run: docker cp cukefm-container:/CUKEFW/src/test/resources/reports ./reports
+        run: docker cp cukefm-container:CUKEFW/src/test/resources/reports ./reports
 
       - name: Remove container
         run: docker stop cukefm-container && docker rm cukefm-container

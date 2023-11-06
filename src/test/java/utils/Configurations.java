@@ -14,7 +14,7 @@ public class Configurations {
     private static final Properties configProperties = new Properties();
     private static final String projectRootPath = System.getProperty("user.dir");
     private static final String confPath = projectRootPath + "/src/test/resources/conf.properties";
-    private static final String extentConfPath = projectRootPath + "/src/test/resources/extent.properties";
+    private static final String separator = System.getProperty("file.separator");
 
     static {
         try {
@@ -50,7 +50,7 @@ public class Configurations {
     }
 
     public static String getDownloadFolder() {
-        return projectRootPath + configProperties.getProperty("download.folder");
+        return projectRootPath + configProperties.getProperty("download.folder").replace("\\", separator);
     }
 
     public static String[] getBrowsers() {
@@ -94,7 +94,7 @@ public class Configurations {
     }
 
     public static String getReportPath() {
-        return projectRootPath + configProperties.getProperty("report.folder") + configProperties.getProperty("report.name") + getTimeStamp() + ".html";
+        return projectRootPath + configProperties.getProperty("report.folder").replace("\\", separator) + configProperties.getProperty("report.name") + getTimeStamp() + ".html";
     }
 
     public static String getTimeStamp() {
