@@ -1,81 +1,81 @@
-name: Run Docker Container and Tests
+name: Build and Run Tests
 
 on:
+  push:
+    branches:
+      - master
   workflow_dispatch:
     inputs:
       os:
-        description: 'Operating system'
-        required: true
+        description: 'Operating System'
+        required: false
         default: 'linux'
       waitTime:
-        description: 'Wait time'
+        description: 'Wait Time'
         required: false
         default: '20'
       downloadWaitTime:
-        description: 'Download wait time'
+        description: 'Download Wait Time'
         required: false
         default: '10'
-      logLevel:
-        description: 'Log level'
-        required: false
-        default: 'INFO'
-      resolution:
-        description: 'Resolution'
-        required: false
-        default: 'desktop'
       browsers:
         description: 'Browsers'
         required: false
         default: 'chrome,firefox'
-      parallel:
-        description: 'Parallel execution'
+      resolution:
+        description: 'Resolutions'
         required: false
-        default: 'false'
-      parallelThreads:
-        description: 'Number of parallel threads'
-        required: false
-        default: '4'
+        default: 'desktop'
 
 jobs:
-  build-and-run:
+  build-and-run-tests:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out repository code
+      - name: Check out repository
         uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
-      - name: Build and push
+      - name: Override properties
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "os=${{ github.event.inputs.os }}" >> src/main/resources/conf.properties
+          echo "waitTime=${{ github.event.inputs.waitTime }}" >> src/main/resources/conf.properties
+          echo "downloadWaitTime=${{ github.event.inputs.downloadWaitTime }}" >> src/main/resources/conf.properties
+          echo "browsers={${{ github.event.inputs.browsers }}}" >> src/main/resources/conf.properties
+          echo "resolutions={${{ github.event.inputs.resolution }}}" >> src/main/resources/conf.properties
+
+      - name: Build and run tests
         uses: docker/build-push-action@v3
         with:
           context: .
           file: ./Dockerfile
+          load: true
           push: false
+          tags: cukefm-docker-image:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
 
-      - name: Modify conf.properties
-        run: |
-          echo "os=${{ github.event.inputs.os }}" >> ./src/test/resources/conf.properties
-          echo "waitTime=${{ github.event.inputs.waitTime }}" >> ./src/test/resources/conf.properties
-          echo "downloadWaitTime=${{ github.event.inputs.downloadWaitTime }}" >> ./src/test/resources/conf.properties
-          echo "log.level=${{ github.event.inputs.logLevel }}" >> ./src/test/resources/conf.properties
-          echo "resolution.${{ github.event.inputs.resolution }}" >> ./src/test/resources/conf.properties
-          echo "browsers={${{ github.event.inputs.browsers }}}" >> ./src/test/resources/conf.properties
-          echo "parallel=${{ github.event.inputs.parallel }}" >> ./src/test/resources/conf.properties
-          echo "parallel.threads=${{ github.event.inputs.parallelThreads }}" >> ./src/test/resources/conf.properties
+      - name: Run tests in Docker container
+        run: docker run --name cukefm-container cukefm-docker-image:latest
 
-      - name: Run Docker Container
-        run: docker run --name cukefm-container cukefm-docker-image
-
-      - name: Copy reports from container
+      - name: Copy results from container
         run: docker cp cukefm-container:/CUKEFW/src/test/resources/reports ./reports
 
-      - name: Upload Reports as Artifacts
+      - name: Remove container
+        run: docker stop cukefm-container && docker rm cukefm-container
+
+      - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
-          name: test-reports
+          name: test-results
           path: ./reports
