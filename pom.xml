@@ -13,7 +13,7 @@
         <maven.compiler.target>20</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <selenium.version>4.12.1</selenium.version>
+        <selenium.version>4.15.0</selenium.version>
         <cucumber.version>7.14.0</cucumber.version>
         <cucumber.pico.container.version>7.14.0</cucumber.pico.container.version>
         <webdriver.manager.version>5.5.3</webdriver.manager.version>

@@ -93,10 +93,7 @@ public class CucumberHooks {
         //} catch (IOException e) {
             //LoggerClass.errorDetailed("Couldn't delete files from downloads folder", e);
         //}
-        WebDriver driver = DriverManager.getInstance().getDriver();
-        if (driver != null) {
-            driver.quit();
-        }
+        DriverManager.getInstance().quitDriver();
     }
 
     @AfterAll

@@ -53,6 +53,8 @@ public class DriverManager {
                 prefs.put("download.default_directory", downloadPath);
                 chromeOptions.setExperimentalOption("prefs", prefs);
                 chromeOptions.addArguments("--headless");
+                chromeOptions.addArguments("--no-sandbox");
+                chromeOptions.addArguments("--disable-dev-shm-usage");
                 chromeOptions.addArguments(String.format("--window-size=%d,%d", width, height));
                 driver = new ChromeDriver(chromeOptions);
                 break;
@@ -66,6 +68,7 @@ public class DriverManager {
                 profile.setPreference("browser.helperApps.neverAsk.saveToDisk", "application/octet-stream,application/vnd.ms-excel");
                 firefoxOptions.setProfile(profile);
                 firefoxOptions.addArguments(String.format("--window-size=%d,%d", width, height));
+                firefoxOptions.addArguments("--headless");
                 driver = new FirefoxDriver(firefoxOptions);
                 break;
             default:
