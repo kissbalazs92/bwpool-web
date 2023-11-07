@@ -27,8 +27,7 @@ public class LoggerClass {
     }
 
     public static void infoDetailed(String message) {
-        detailedLogger.info(message);
-    }
+        detailedLogger.info(message);}
 
     public static void errorDetailed(String message, Throwable throwable) {
         detailedLogger.error(message, throwable);
@@ -40,4 +39,10 @@ public class LoggerClass {
     public static void errorRoot(String message) {
         rootLogger.error(message);
     }
+
+    public static Logger getDetailedLoggerObject() {
+        return detailedLogger;
+    }
 }
+
+

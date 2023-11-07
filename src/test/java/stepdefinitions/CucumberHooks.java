@@ -7,10 +7,7 @@ import listeners.CustomCucumberListener;
 import org.openqa.selenium.WebDriver;
 import org.testng.SkipException;
 import runner.TestRunner;
-import utils.Configurations;
-import utils.DriverManager;
-import utils.ExtentManager;
-import utils.LoggerClass;
+import utils.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +18,7 @@ public class CucumberHooks {
 
     private String currentTestName;
     private static final List<String> failedTestCases = new ArrayList<>();
+    private int counter = 1;
 
 
     @Before
@@ -62,7 +60,9 @@ public class CucumberHooks {
     @AfterStep
     public void afterStep(Scenario scenario) {
         if(CustomCucumberListener.stepName != null) {
-            LoggerClass.infoSimple("--------------------------------------------------------------");
+            if(counter == 1) {
+                LoggerClass.infoSimple("--------------------------------------------------------------");
+            }
             if (scenario.isFailed()) {
                 LoggerClass.logResultFail("STEP: " + CustomCucumberListener.stepName + " [FAIL]");
                 ExtentManager.test.log(com.aventstack.extentreports.Status.FAIL, CustomCucumberListener.stepName);
@@ -70,6 +70,9 @@ public class CucumberHooks {
                 LoggerClass.logResultPass("STEP: " + CustomCucumberListener.stepName + " [PASS]");
                 ExtentManager.test.log(com.aventstack.extentreports.Status.PASS, CustomCucumberListener.stepName);
             }
+            StepLogger.getInstance().writeMessages();
+            LoggerClass.infoSimple("--------------------------------------------------------------");
+            counter++;
         }
     }
 
@@ -80,7 +83,6 @@ public class CucumberHooks {
             failedTestCases.add(currentTestName);
             LoggerClass.logResultFail("===================== Scenario: [FAILED] =====================");
         }else if(scenario.getStatus().equals(Status.PASSED)) {
-            LoggerClass.infoSimple("--------------------------------------------------------------");
             LoggerClass.logResultPass("===================== Scenario: [PASSED] =====================" );
         }
     }
@@ -96,10 +98,7 @@ public class CucumberHooks {
         DriverManager.getInstance().quitDriver();
     }
 
-    @AfterAll
-    public static void afterAllScenarios() {
-        if(!failedTestCases.isEmpty()) {
-            LoggerClass.errorRoot("Failed Scenarios: " + failedTestCases);
-        }
+    public static List<String> getFailedTestCases() {
+        return failedTestCases;
     }
 }

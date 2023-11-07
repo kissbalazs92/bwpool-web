@@ -1,10 +1,12 @@
 package listeners;
 
+import org.apache.logging.log4j.message.MessageFactory;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverListener;
 import utils.DriverManager;
 import utils.LoggerClass;
+import utils.StepLogger;
 import utils.Utilities;
 
 import java.lang.reflect.InvocationTargetException;
@@ -12,8 +14,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class CustomWebDriverListener implements WebDriverListener {
-
-    private int count = 0;
 
     @Override
     public void afterClick(WebElement element) {
@@ -23,14 +23,5 @@ public class CustomWebDriverListener implements WebDriverListener {
     @Override
     public void afterSendKeys(WebElement element, CharSequence... keysToSend) {
         LoggerClass.infoDetailed("Typed " + Arrays.toString(keysToSend) + " in element: " + Utilities.getElementDescription(element));
-    }
-
-    @Override
-    public void onError(Object target, Method method, Object[] args, InvocationTargetException e) {
-        if(count == 0) {
-            //System.out.println(DriverManager.getInstance().getDriver().getPageSource());
-            count++;
-        }
-
     }
 }
