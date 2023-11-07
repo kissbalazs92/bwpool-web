@@ -6,22 +6,18 @@ on:
       - master
   workflow_dispatch:
     inputs:
-      waitTime:
-        description: 'Wait Time'
-        required: false
-        default: '20'
-      downloadWaitTime:
-        description: 'Download Wait Time'
-        required: false
-        default: '10'
       browsers:
         description: 'Browsers'
-        required: false
+        required: true
         default: 'chrome,firefox'
       resolution:
         description: 'Resolutions'
+        required: true
+        default: 'desktop,mobile'
+      log_level:
+        description: "Log Level"
         required: false
-        default: 'desktop'
+        default: 'INFO'
 
 jobs:
   build-and-run-tests:
@@ -44,10 +40,9 @@ jobs:
       - name: Override properties
         if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
-          echo "waitTime=${{ github.event.inputs.waitTime }}" >> src/test/resources/conf.properties
-          echo "downloadWaitTime=${{ github.event.inputs.downloadWaitTime }}" >> src/test/resources/conf.properties
           echo "browsers={${{ github.event.inputs.browsers }}}" >> src/test/resources/conf.properties
           echo "resolutions={${{ github.event.inputs.resolution }}}" >> src/test/resources/conf.properties
+          echo "log.level={${{ github.event.inputs.log_level }}}" >> src/test/resources/conf.properties
 
       - name: Build and run tests
         uses: docker/build-push-action@v3
