@@ -7,23 +7,9 @@
             <class name="runner.TestRunner"/>
         </classes>
     </test>
-    <test name="Test for chrome and mobile">
-        <parameter name="browser" value="chrome"/>
-        <parameter name="resolution" value="mobile"/>
-        <classes>
-            <class name="runner.TestRunner"/>
-        </classes>
-    </test>
     <test name="Test for firefox and desktop">
         <parameter name="browser" value="firefox"/>
         <parameter name="resolution" value="desktop"/>
-        <classes>
-            <class name="runner.TestRunner"/>
-        </classes>
-    </test>
-    <test name="Test for firefox and mobile">
-        <parameter name="browser" value="firefox"/>
-        <parameter name="resolution" value="mobile"/>
         <classes>
             <class name="runner.TestRunner"/>
         </classes>

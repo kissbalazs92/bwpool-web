@@ -56,6 +56,11 @@ public class TestRunner extends AbstractTestNGCucumberTests {
         List<String> failedTestCases = CucumberHooks.getFailedTestCases();
         if(!failedTestCases.isEmpty()) {
             LoggerClass.errorRoot("Failed Scenarios: " + failedTestCases);
+        } else {
+            LoggerClass.infoSimple("\n");
+            LoggerClass.infoSimple("==================================================");
+            LoggerClass.logResultPass("All Scenarios Passed");
+            LoggerClass.infoSimple("==================================================");
         }
         ExtentManager.extent.flush();
     }
