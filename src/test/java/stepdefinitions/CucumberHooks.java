@@ -56,6 +56,7 @@ public class CucumberHooks {
             if (scenario.isFailed()) {
                 LoggerClass.logResultFail("STEP: " + CustomCucumberListener.stepName + " [FAIL]");
                 ExtentManager.test.log(com.aventstack.extentreports.Status.FAIL, CustomCucumberListener.stepName);
+                Utilities.takeScreenshotAndAttachToReport();
             } else {
                 LoggerClass.logResultPass("STEP: " + CustomCucumberListener.stepName + " [PASS]");
                 ExtentManager.test.log(com.aventstack.extentreports.Status.PASS, CustomCucumberListener.stepName);

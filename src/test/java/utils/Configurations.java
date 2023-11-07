@@ -14,6 +14,7 @@ public class Configurations {
     private static final Properties configProperties = new Properties();
     private static final String projectRootPath = System.getProperty("user.dir");
     private static final String confPath = projectRootPath + "/src/test/resources/conf.properties";
+    private static final String screenshotsPath = projectRootPath + "/src/test/resources/screenshots";
     private static final String separator = System.getProperty("file.separator");
 
     static {
@@ -101,5 +102,9 @@ public class Configurations {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm");
         return now.format(formatter);
+    }
+
+    public static String getScreenshotPath() {
+        return screenshotsPath.replace("\\", separator);
     }
 }

@@ -36,5 +36,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+#Project
 /src/test/resources/reports/
 /src/test/resources/downloads/
+/src/test/resources/screenshots/

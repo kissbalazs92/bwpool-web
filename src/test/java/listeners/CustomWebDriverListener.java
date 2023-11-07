@@ -1,12 +1,8 @@
 package listeners;
 
-import org.apache.logging.log4j.message.MessageFactory;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.WebDriverListener;
-import utils.DriverManager;
 import utils.LoggerClass;
-import utils.StepLogger;
 import utils.Utilities;
 
 import java.lang.reflect.InvocationTargetException;

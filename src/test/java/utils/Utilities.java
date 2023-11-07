@@ -1,19 +1,20 @@
 package utils;
 
+import com.aventstack.extentreports.MediaEntityBuilder;
 import components.Grid;
 import models.CustomerModel;
 import models.BaseModel;
 import org.openqa.selenium.*;
+import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.support.ui.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 
 public class Utilities {
 
@@ -208,6 +209,19 @@ public class Utilities {
                 attempts++;
             }
         }
+    }
+
+    public static void takeScreenshotAndAttachToReport() {
+        TakesScreenshot takesScreenshot = (TakesScreenshot) DriverManager.getInstance().getDriver();
+        File screenshotFile = takesScreenshot.getScreenshotAs(OutputType.FILE);
+        String screenshotName = System.currentTimeMillis() + ".png";
+        String screenshotPath = Configurations.getScreenshotPath() + File.separator + screenshotName;
+        try {
+            FileHandler.copy(screenshotFile, new File(screenshotPath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        ExtentManager.test.fail(MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath).build());
     }
 
 

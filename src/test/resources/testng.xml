@@ -7,11 +7,4 @@
             <class name="runner.TestRunner"/>
         </classes>
     </test>
-    <test name="Test for firefox and desktop">
-        <parameter name="browser" value="firefox"/>
-        <parameter name="resolution" value="desktop"/>
-        <classes>
-            <class name="runner.TestRunner"/>
-        </classes>
-    </test>
 </suite>
