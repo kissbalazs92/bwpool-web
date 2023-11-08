@@ -1,8 +1,15 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 <suite name="BWPool Tests">
-    <test name="Test for chrome and mobile">
+    <test name="Test for chrome and desktop">
         <parameter name="browser" value="chrome"/>
-        <parameter name="resolution" value="mobile"/>
+        <parameter name="resolution" value="desktop"/>
+        <classes>
+            <class name="runner.TestRunner"/>
+        </classes>
+    </test>
+    <test name="Test for firefox and desktop">
+        <parameter name="browser" value="firefox"/>
+        <parameter name="resolution" value="desktop"/>
         <classes>
             <class name="runner.TestRunner"/>
         </classes>

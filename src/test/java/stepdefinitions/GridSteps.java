@@ -116,20 +116,7 @@ public class GridSteps extends StepDefinitionBase {
 
     @When("I filter for the \"{dataType}\" based on \"{modelsGridProperty}\" in the Search field")
     public void iFilterForTheBasedOnInTheSearchField(DataType dataType, ModelsGridProperties modelsGridProperty) {
-        BaseModel model;
-        switch (dataType) {
-            case CUSTOMER:
-                model = context.getLatestCustomers().get(0);
-                break;
-            case TOOL:
-                model = context.getLatestTools().get(0);
-                break;
-            case LOCATION:
-                model = context.getLatestLocations().get(0);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported data type: " + dataType);
-        }
+        BaseModel model = dataType.getFirstModel(context);
         String textToSearch = model.getTextToSearch(modelsGridProperty, model);
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
         int gridRows = grid.getRowsCount();
@@ -144,52 +131,19 @@ public class GridSteps extends StepDefinitionBase {
 
     @Then("the grid should successfully filter for the \"{dataType}\" with \"{modelsGridProperty}\"")
     public void theGridShouldSuccessfullyFilterForTheWith(DataType dataType, ModelsGridProperties modelsGridProperty) {
-        List<BaseModel> models;
-        switch (dataType) {
-            case CUSTOMER:
-                models = new ArrayList<>(context.getLatestCustomers());
-                break;
-            case TOOL:
-                models = new ArrayList<>(context.getLatestTools());
-                break;
-            case LOCATION:
-                models = new ArrayList<>(context.getLatestLocations());
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported data type: " + dataType);
-        }
+        List<BaseModel> models = dataType.getModelList(context);
         List<List<String>> expectedValuesInGrid = models.stream()
                 .map(BaseModel::extractGridValues)
                 .toList();
-
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
-        //List<List<String>> actualValuesInGrid = grid.getGridContent();
         Utilities.waitForTextToDisappear("No records to display");
         assertTrue(grid.checkIfExpectedInGrid(expectedValuesInGrid));
-        List<String> columnName = modelsGridProperty.getColumnName();
-
-
-        //softAssert.assertTrue(Utilities.areAllElementsSameAtColumn(actualValuesInGrid, grid.getColumnIndex(columnName)));
     }
 
     @When("I click on the URL in \"{gridType}\" in the {string} field")
     public void iClickOnTheURLInInTheField(GridType gridType, String fieldName) {
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
-        BaseModel model;
-        switch (gridType) {
-            case CUSTOMER:
-                model = context.getLatestCustomers().get(0);
-                break;
-            case TOOL:
-                model = context.getLatestTools().get(0);
-                break;
-            case LOCATION:
-                model = context.getLatestLocations().get(0);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported grid type: " + gridType);
-        }
-        model.getColumnHeaderId();
+        BaseModel model = gridType.getModel(context);
         WebElement urlCell = grid.getCellBasedOnColumnHeaderIdAndColumnIndex(model.getColumnHeaderId(), grid.getColumnIndex(new ArrayList<>(Collections.singleton(fieldName))));
         Utilities.click(urlCell);
         context.setCurrentPage(new LocationInfo(DriverManager.getInstance().getDriver(), model.getColumnHeaderId().replaceAll("[^0-9]", "")));
@@ -197,40 +151,14 @@ public class GridSteps extends StepDefinitionBase {
 
     @And("I select a previously recorded \"{dataType}\"")
     public void iSelectAPreviouslyRecorded(DataType dataType) {
-        BaseModel model;
-        switch (dataType) {
-            case CUSTOMER:
-                model = context.getLatestCustomers().get(0);
-                break;
-            case TOOL:
-                model = context.getLatestTools().get(0);
-                break;
-            case LOCATION:
-                model = context.getLatestLocations().get(0);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported data type: " + dataType);
-        }
+        BaseModel model = dataType.getFirstModel(context);
         ((PageWithGrid) context.getCurrentPage()).getGrid().clickOnRecordBasedOnColumnHeaderId(model.getColumnHeaderId());
     }
 
     @Then("the \"{dataType}\" should be selected")
     public void theShouldBeSelected(DataType dataType) {
-        BaseModel model;
+        BaseModel model = dataType.getFirstModel(context);
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
-        switch (dataType) {
-            case CUSTOMER:
-                model = context.getLatestCustomers().get(0);
-                break;
-            case TOOL:
-                model = context.getLatestTools().get(0);
-                break;
-            case LOCATION:
-                model = context.getLatestLocations().get(0);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported data type: " + dataType);
-        }
         assertTrue(grid.isRecordSelected(model.getColumnHeaderId()));
     }
 
@@ -250,20 +178,7 @@ public class GridSteps extends StepDefinitionBase {
     @Then("the in service should be {string} for the \"{dataType}\" in the grid")
     public void theInServiceShouldBeForTheInTheGrid(String condition, DataType dataType) {
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
-        BaseModel model;
-        switch (dataType) {
-            case CUSTOMER:
-                model = context.getLatestCustomers().get(0);
-                break;
-            case TOOL:
-                model = context.getLatestTools().get(0);
-                break;
-            case LOCATION:
-                model = context.getLatestLocations().get(0);
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported data type: " + dataType);
-        }
+        BaseModel model = dataType.getFirstModel(context);
         String actualValue = ModelsGridProperties.TOOL_SERVICE.extractValueFromGrid(grid, model.getColumnHeaderId());
         if(model instanceof ToolModel) {
             ((ToolModel) model).setInService(Boolean.parseBoolean(condition));
