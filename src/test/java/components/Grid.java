@@ -1,9 +1,11 @@
 package components;
 
+import enums.DataType;
 import io.cucumber.datatable.DataTable;
 import models.CustomerModel;
 import models.ToolModel;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -12,13 +14,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import pages.PageWithGrid;
 import stepdefinitions.GridSteps;
 import utils.Configurations;
+import utils.DriverManager;
 import utils.ScenarioContext;
 import utils.Utilities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Grid {
 
@@ -48,6 +48,9 @@ public class Grid {
 
     @FindBy(xpath = "//thead/tr/th[not(contains(@class, 'e-hide'))]")
     private List<WebElement> headers;
+
+    @FindBy(id = "hscroll_2_nav_right")
+    private WebElement mobileRightScroll;
 
     private By nthRowHiddenColumnLocator = By.xpath("//tbody/tr[1]/td[1]");
 
@@ -172,26 +175,11 @@ public class Grid {
     }
 
     public boolean checkIfExpectedInGrid(List<List<String>> expectedList) {
-        String xpathOfRowCells = "//*[not(self::tr) and not(contains(@class, 'e-hide')) and not(contains(@aria-label, 'Azonosító')) and (text() and not(normalize-space(.)='') or contains(@class, 'e-icons') or (parent::div[contains(@class, 'e-checkbox-wrapper')] and contains(@class, 'e-frame')))]";
         List<List<String>> tempList = new ArrayList<>(expectedList);
-
+        String expectedAsString = Utilities.twoDListToPlainString(tempList);
         for (WebElement row : rows) {
-            List<WebElement> rowRecords = row.findElements(By.xpath("." + xpathOfRowCells));
-            List<String> rowContent = new ArrayList<>();
-            for (WebElement rowRecord : rowRecords) {
-                if (rowRecord.getAttribute("class").contains("e-frame")) {
-                    rowContent.add(rowRecord.getAttribute("class").contains("e-check") ? "true" : "false");
-                } else {
-                    String recordText = rowRecord.getText().trim();
-                    rowContent.add(recordText);
-                }
-            }
-
-            if (tempList.contains(rowContent)) {
-                tempList.remove(rowContent);
-                if (tempList.isEmpty()) {
-                    return true;
-                }
+            if(expectedAsString.contains(row.getText().replaceAll("\\s+", " ").replaceFirst("^\\d+\\s+", ""))) {
+                return true;
             }
         }
         return tempList.isEmpty();
@@ -209,7 +197,6 @@ public class Grid {
         for(int i = 0; i < headers.size(); i++) {
             for(int j = 0; j < columnName.size(); j++) {
                 if(headers.get(i).getText().equals(columnName.get(j))) {
-                    System.out.println("Column index: " + i);
                     return i;
                 }
             }
@@ -226,18 +213,40 @@ public class Grid {
     public void clickOnRecordBasedOnColumnHeaderId(String columnHeaderId) {
         By elementLocator = By.xpath("//td[@aria-label='" + columnHeaderId + "']/../td[not(contains(@class, 'e-hide'))][1]");
         Configurations.getWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(elementLocator));
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        Utilities.scrollToElement(driver.findElement(elementLocator));
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         Utilities.scrollAndClick(driver.findElement(elementLocator));
     }
 
     public boolean isRecordSelected(String columnHeaderId) {
-        By elementLocator = By.xpath("//td[@aria-label='" + columnHeaderId + "']/../td[not(contains(@class, 'e-hide'))][1]");
-        Configurations.getWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(elementLocator));
-        String elementClass = driver.findElement(elementLocator).getAttribute("class");
-        System.out.println("Element class: " + elementClass);
-        return elementClass.contains("e-focus");
+        By rowLocator = By.xpath("//td[@aria-label='" + columnHeaderId + "']/..");
+        Configurations.getWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(rowLocator));
+        WebElement selectedWebElement = driver.findElement(rowLocator);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        Utilities.waitUntilElementAttributeEquals(selectedWebElement, "aria-selected", "true");
+        String elementAriaSelected = driver.findElement(rowLocator).getAttribute("aria-selected");
+        return elementAriaSelected.equals("true");
     }
 
     public PageWithGrid getPageToAppearOn() {
         return pageToAppearOn;
+    }
+
+    public void clickMobileRightScroll() {
+        Utilities.click(mobileRightScroll);
+        Utilities.waitForElement(searchBox);
     }
 }

@@ -44,7 +44,7 @@ jobs:
           echo "resolutions={${{ github.event.inputs.resolution }}}" >> src/test/resources/conf.properties
           echo "log.level={${{ github.event.inputs.log_level }}}" >> src/test/resources/conf.properties
 
-      - name: Build and run tests
+      - name: Build
         uses: docker/build-push-action@v3
         with:
           context: .

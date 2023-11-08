@@ -52,7 +52,7 @@ public class DriverManager {
                 Map<String, Object> prefs = new HashMap<>();
                 prefs.put("download.default_directory", downloadPath);
                 chromeOptions.setExperimentalOption("prefs", prefs);
-                chromeOptions.addArguments("--headless");
+                //chromeOptions.addArguments("--headless");
                 chromeOptions.addArguments("--no-sandbox");
                 chromeOptions.addArguments("--disable-dev-shm-usage");
                 chromeOptions.addArguments(String.format("--window-size=%d,%d", width, height));

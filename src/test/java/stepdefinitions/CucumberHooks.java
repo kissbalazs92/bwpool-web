@@ -9,6 +9,8 @@ import org.testng.SkipException;
 import runner.TestRunner;
 import utils.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -81,11 +83,11 @@ public class CucumberHooks {
     @After(order = 2)
     public void tearDown() {
         Path downloadsFolderPath = Paths.get(Configurations.getDownloadFolder() + "/Export.xlsx");
-        //try {
-            //Files.delete(downloadsFolderPath);
-        //} catch (IOException e) {
-            //LoggerClass.errorDetailed("Couldn't delete files from downloads folder", e);
-        //}
+        try {
+            Files.delete(downloadsFolderPath);
+        } catch (IOException e) {
+            LoggerClass.errorDetailed("Couldn't delete files from downloads folder", e);
+        }
         DriverManager.getInstance().quitDriver();
     }
 

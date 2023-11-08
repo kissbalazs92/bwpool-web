@@ -57,7 +57,6 @@ public class ScenarioContext {
             allRegisteredCustomers = new ArrayList<>();
         }
         this.allRegisteredCustomers.addAll(customers);
-        System.out.println("All registered customers: " + allRegisteredCustomers);
     }
 
     public BaseModel getModelToBeAddToGrid() {

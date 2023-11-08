@@ -26,6 +26,7 @@ public class LocationInfoSteps extends StepDefinitionBase {
 
     @Then("the \"{pageType}\" should open")
     public void theShouldOpen(PageType page) {
+        Utilities.waitForTextToAppear("Telephely adatok");
         BasePage currentPage = (BasePage) context.getCurrentPage();
         assertEquals(currentPage.getClass().getSimpleName(), page.getName());
         assertEquals(DriverManager.getInstance().getDriver().getCurrentUrl(), currentPage.getUrl());
@@ -66,15 +67,10 @@ public class LocationInfoSteps extends StepDefinitionBase {
         List<ToolModel> registeredToolsToLocation = location.getCustomer().getTools();
         HashMap<String, String> actualTools = new HashMap<>();
         for (ToolModel tool : registeredToolsToLocation) {
-            System.out.println(tool.getName());
-            if (tool.getInService()) {
+            if (!tool.getInService()) {
                 actualTools.put(tool.getGridNumberWhenRegistered(), tool.getName());
-                System.out.println("True: " + tool.getName());
-                System.out.println(tool.getGridNumberWhenRegistered());
             }
         }
-        System.out.println(actualTools);
-        System.out.println(expectedTools);
         assertEquals(expectedTools, actualTools);
     }
 }

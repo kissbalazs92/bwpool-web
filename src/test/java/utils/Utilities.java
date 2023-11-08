@@ -5,6 +5,7 @@ import components.Grid;
 import models.CustomerModel;
 import models.BaseModel;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.io.FileHandler;
 import org.openqa.selenium.support.ui.*;
 
@@ -30,11 +31,6 @@ public class Utilities {
             } catch (Exception e) {
                 if (++attempts >= maxAttempts) {
                     throw new RuntimeException("Failed to click element after " + attempts + " attempts", e);
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
                 }
                 By locator = getLocatorFromElement(element);
                 element = DriverManager.getInstance().getDriver().findElement(locator);
@@ -117,7 +113,13 @@ public class Utilities {
 
     public static void waitForTextToAppear(String text) {
         Wait<WebDriver> wait = Configurations.getWait();
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.xpath("//*[contains(text(),'" + text + "')]"), text));
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.xpath("//*[contains(text(),\"" + text + "\")]"), text));
+    }
+
+    public static void waitForTextToDisappear(String text) {
+        Wait<WebDriver> wait = Configurations.getWait();
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//*[contains(text(),'" + text + "')]")));
+        wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//*[contains(text(),'" + text + "')]"), 0));
     }
 
     public static void waitForElementTextToBe(WebElement element, String text) {
@@ -198,14 +200,13 @@ public class Utilities {
     }
 
     public static void scrollAndClick(WebElement element) {
-        JavascriptExecutor js = (JavascriptExecutor) DriverManager.getInstance().getDriver();
         int attempts = 0;
         while(attempts < 3) {
             try {
-                js.executeScript("arguments[0].scrollIntoView();", element);
+                scrollToElement(element);
                 click(element);
                 break;
-            } catch (StaleElementReferenceException e) {
+            } catch (Exception e) {
                 attempts++;
             }
         }
@@ -224,5 +225,31 @@ public class Utilities {
         ExtentManager.test.fail(MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath).build());
     }
 
+    public static String twoDListToPlainString(List<List<String>> list) {
+        StringBuilder stringToReturn = new StringBuilder();
+        for (List<String> innerList : list) {
+            for (String element : innerList) {
+                stringToReturn.append(element).append(" ");
+            }
+        }
+        return stringToReturn.toString().replaceAll("\\s+", " ");
+    }
 
+    public static void scrollToTop() {
+        JavascriptExecutor js = (JavascriptExecutor) DriverManager.getInstance().getDriver();
+        js.executeScript("window.scrollTo(0,0)");
+    }
+
+    public static void waitUntilElementAttributeEquals(WebElement element, String attribute, String value) {
+        Wait<WebDriver> wait = Configurations.getWait();
+        wait.until((WebDriver driver) -> {
+            String attributeValue = element.getAttribute(attribute);
+            return attributeValue != null && attributeValue.equals(value);
+        });
+    }
+
+    public static void scrollToElement(WebElement element) {
+        JavascriptExecutor js = (JavascriptExecutor) DriverManager.getInstance().getDriver();
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
+    }
 }

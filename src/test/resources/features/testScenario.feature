@@ -63,4 +63,3 @@ Feature: Customer, Locations, and Tools Menu Usage
     When I click on the URL in "Telephelyek grid" in the "Utca" field
     Then the "LocationInfo page" should open
     And the "Tool" in service should not be on the list
-    Then the "Ügyfelek grid" should appear

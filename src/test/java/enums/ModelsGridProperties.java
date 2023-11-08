@@ -16,16 +16,12 @@ public enum ModelsGridProperties {
         @Override
         public String extractValue(Object obj) {
             if(obj instanceof models.CustomerModel) {
-                System.out.println("CUSTOMER branch: " + obj);
                 return ((models.CustomerModel) obj).getName();
             } else if (obj instanceof models.LocationModel) {
-                System.out.println("LOCATION branch: " + obj);
                 return ((models.LocationModel) obj).getCustomerName();
             } else if (obj instanceof models.ToolModel) {
-                System.out.println("TOOL branch: " + obj);
                 return ((models.ToolModel) obj).getCustomerName();
             }
-            System.out.println("UNKNOWN branch: " + obj);
             return null;
         }
 
@@ -33,15 +29,12 @@ public enum ModelsGridProperties {
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             if (grid.getPageToAppearOn() instanceof Customer) {
                 int columnIndex = grid.getColumnIndex(Collections.singletonList(this.getColumnName().get(0)));
-                System.out.println("columnIndex: " + columnIndex);
                 return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
             } else if (grid.getPageToAppearOn() instanceof Location) {
                 int columnIndex = grid.getColumnIndex(Collections.singletonList(this.getColumnName().get(1)));
-                System.out.println("columnIndex: " + columnIndex);
                 return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
             } else if (grid.getPageToAppearOn() instanceof Tool) {
                 int columnIndex = grid.getColumnIndex(Collections.singletonList(this.getColumnName().get(2)));
-                System.out.println("columnIndex: " + columnIndex);
                 return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
             }
             return null;
@@ -59,7 +52,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -75,7 +67,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -91,7 +82,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -107,7 +97,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -123,7 +112,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -139,7 +127,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -155,7 +142,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -171,7 +157,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -187,7 +172,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -203,7 +187,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -219,7 +202,6 @@ public enum ModelsGridProperties {
         @Override
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getText();
         }
     },
@@ -233,7 +215,6 @@ public enum ModelsGridProperties {
         }
         public String extractValueFromGrid(Grid grid, String columnHeaderId) {
             int columnIndex = grid.getColumnIndex(this.getColumnName());
-            System.out.println("columnIndex: " + columnIndex);
             return grid.getCellBasedOnColumnHeaderIdAndColumnIndex(columnHeaderId, columnIndex).getAttribute("aria-label").split(" ")[0];
         }
     };

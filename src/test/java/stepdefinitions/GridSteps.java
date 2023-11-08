@@ -10,6 +10,7 @@ import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import jdk.jshell.execution.Util;
 import models.BaseModel;
 import models.LocationModel;
 import models.ToolModel;
@@ -18,6 +19,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import pages.LocationInfo;
 import pages.PageWithGrid;
+import runner.TestRunner;
 import utils.Configurations;
 import utils.DriverManager;
 import utils.ScenarioContext;
@@ -47,10 +49,10 @@ public class GridSteps extends StepDefinitionBase {
     }
 
 
-    @When("I register {int} {string} data based on the API message")
-    public void iRegisterDataBasedOnTheAPIMessage(int count, String modelName) {
+    @When("I register {int} \"{dataType}\" data based on the API message")
+    public void iRegisterDataBasedOnTheAPIMessage(int count, DataType modelName) {
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
-        grid.register(count, modelName, null, context);
+        grid.register(count, modelName.getValue(), null, context);
     }
 
     @When("I register {int} {string} data based on the API message with the following details")
@@ -67,6 +69,7 @@ public class GridSteps extends StepDefinitionBase {
             grid = ((PageWithGrid) currentPage).getGrid();
             grid.getGridDialog().clickSaveButton();
             BaseModel model = context.getModelToBeAddToGrid();
+            Utilities.waitForTextToDisappear("No records to display");
             Utilities.waitForTextToAppear(model.getPartnerName());
         }
         else {
@@ -77,29 +80,19 @@ public class GridSteps extends StepDefinitionBase {
     @Then("the \"{dataType}\" data should appear in the grid list")
     public void theDataShouldAppearInTheGridList(DataType dataType) {
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
-        List<BaseModel> models = new ArrayList<>();
-        switch (dataType) {
-            case CUSTOMER:
-                models = new ArrayList<BaseModel>(context.getLatestCustomers());
-                break;
-            case TOOL:
-                models = new ArrayList<BaseModel>(context.getLatestTools());
-                break;
-            case LOCATION:
-                models = new ArrayList<BaseModel>(context.getLatestLocations());
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported data type: " + dataType);
-        }
+        List<BaseModel> models = dataType.getModelList(context);
         List<List<String>> expectedValuesInGrid = models.stream()
                 .map(BaseModel::extractGridValues)
                 .toList();
-        
-        softAssert.assertTrue(grid.checkIfExpectedInGrid(expectedValuesInGrid));
-        for (int i = 0; i < models.size(); i++) {
-            models.get(i).setColumnHeaderId(grid.getColumnHeaderId(String.valueOf(i+1)));
+        Utilities.waitForTextToDisappear("No records to display");
+        assertTrue(grid.checkIfExpectedInGrid(expectedValuesInGrid));
+        int y = 0;
+        for (int i = models.size() - 1; i >= 0; i--) {
+            y++;
+            String columnHeaderId = grid.getColumnHeaderId(String.valueOf(y));
+            models.get(i).setColumnHeaderId(columnHeaderId);
             if(models.get(i) instanceof ToolModel) {
-                ((ToolModel) models.get(i)).setGridNumberWhenRegistered(grid.getGridNumberForTool(String.valueOf(i+1)));
+                ((ToolModel) models.get(i)).setGridNumberWhenRegistered(grid.getGridNumberForTool(String.valueOf(y)));
             }
         }
     }
@@ -113,7 +106,12 @@ public class GridSteps extends StepDefinitionBase {
     @When("I click on the {string} button")
     public void iClickOnTheButton(String buttonName) {
         WebElement button = DriverManager.getInstance().getDriver().findElement(By.xpath("//span[text()='" + buttonName + "']/ancestor::button[1]"));
-        Utilities.click(button);
+        WebElement header = DriverManager.getInstance().getDriver().findElement(By.xpath("//div[@class='top-row px-4']"));
+        if(buttonName.equals("Edit")) {
+            Utilities.removeElement(header);
+            Utilities.scrollAndClick(button);
+        }
+        Utilities.scrollAndClick(button);
     }
 
     @When("I filter for the \"{dataType}\" based on \"{modelsGridProperty}\" in the Search field")
@@ -122,16 +120,12 @@ public class GridSteps extends StepDefinitionBase {
         switch (dataType) {
             case CUSTOMER:
                 model = context.getLatestCustomers().get(0);
-                System.out.println(model);
                 break;
             case TOOL:
                 model = context.getLatestTools().get(0);
-                System.out.println(model);
                 break;
             case LOCATION:
                 model = context.getLatestLocations().get(0);
-                System.out.println(model);
-                System.out.println(((LocationModel) model).getCustomer());
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported data type: " + dataType);
@@ -139,6 +133,9 @@ public class GridSteps extends StepDefinitionBase {
         String textToSearch = model.getTextToSearch(modelsGridProperty, model);
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
         int gridRows = grid.getRowsCount();
+        if(TestRunner.resolution.equals("mobile")) {
+            grid.clickMobileRightScroll();
+        }
         grid.typeInSearchBox(textToSearch);
         grid.clickSearchButton();
         Utilities.waitForRowCountToDecrease(grid, gridRows);
@@ -167,7 +164,8 @@ public class GridSteps extends StepDefinitionBase {
 
         Grid grid = ((PageWithGrid) context.getCurrentPage()).getGrid();
         //List<List<String>> actualValuesInGrid = grid.getGridContent();
-        softAssert.assertTrue(grid.checkIfExpectedInGrid(expectedValuesInGrid));
+        Utilities.waitForTextToDisappear("No records to display");
+        assertTrue(grid.checkIfExpectedInGrid(expectedValuesInGrid));
         List<String> columnName = modelsGridProperty.getColumnName();
 
 
@@ -192,9 +190,8 @@ public class GridSteps extends StepDefinitionBase {
                 throw new UnsupportedOperationException("Unsupported grid type: " + gridType);
         }
         model.getColumnHeaderId();
-        System.out.println("Column Header Id: " + model.getColumnHeaderId());
         WebElement urlCell = grid.getCellBasedOnColumnHeaderIdAndColumnIndex(model.getColumnHeaderId(), grid.getColumnIndex(new ArrayList<>(Collections.singleton(fieldName))));
-        Utilities.scrollAndClick(urlCell);
+        Utilities.click(urlCell);
         context.setCurrentPage(new LocationInfo(DriverManager.getInstance().getDriver(), model.getColumnHeaderId().replaceAll("[^0-9]", "")));
     }
 
@@ -234,7 +231,7 @@ public class GridSteps extends StepDefinitionBase {
             default:
                 throw new UnsupportedOperationException("Unsupported data type: " + dataType);
         }
-        softAssert.assertTrue(grid.isRecordSelected(model.getColumnHeaderId()));
+        assertTrue(grid.isRecordSelected(model.getColumnHeaderId()));
     }
 
     @Then("the \"{dataType}\" data dialog should open")
@@ -270,10 +267,7 @@ public class GridSteps extends StepDefinitionBase {
         String actualValue = ModelsGridProperties.TOOL_SERVICE.extractValueFromGrid(grid, model.getColumnHeaderId());
         if(model instanceof ToolModel) {
             ((ToolModel) model).setInService(Boolean.parseBoolean(condition));
-            System.out.println("In Service: " + ((ToolModel) model).getName());
-            System.out.println("In Service: " + ((ToolModel) model).getGridNumberWhenRegistered());
         }
         assertEquals(actualValue, condition);
-
     }
 }
